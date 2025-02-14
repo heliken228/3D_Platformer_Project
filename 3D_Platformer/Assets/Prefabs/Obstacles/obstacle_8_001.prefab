@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: -8679921383154817045}
   - component: {fileID: -5754084199372789682}
   - component: {fileID: -7511558181221131132}
+  - component: {fileID: -7842634873251024231}
   m_Layer: 0
   m_Name: obstacle_8_001
   m_TagString: Untagged
@@ -87,6 +88,28 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!64 &-7842634873251024231
+MeshCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132149155446097}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 0
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 5
+  m_Convex: 1
+  m_CookingOptions: 30
+  m_Mesh: {fileID: 1245006836834680741, guid: 8f8cd1f1f827f7c4e8675e87a59c9e47, type: 3}
 --- !u!1001 &7307808400306749773
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -142,10 +165,33 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: cc1a3130bc5dcd744aa6e7116426d78c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 2256308901657880729}
   m_SourcePrefab: {fileID: 100100000, guid: cc1a3130bc5dcd744aa6e7116426d78c, type: 3}
 --- !u!4 &7124752304600458918 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: cc1a3130bc5dcd744aa6e7116426d78c, type: 3}
   m_PrefabInstance: {fileID: 7307808400306749773}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &7614431196045081628 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 919132149155446097, guid: cc1a3130bc5dcd744aa6e7116426d78c, type: 3}
+  m_PrefabInstance: {fileID: 7307808400306749773}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &2256308901657880729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7614431196045081628}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b8e0f057cb52a7448d25574569d4d54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rotationAxis: {x: 1, y: 0, z: 0}
+  _speed: 50
+  _rotationAngle: -45
