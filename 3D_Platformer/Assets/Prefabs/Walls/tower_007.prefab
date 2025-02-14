@@ -86,9 +86,9 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 0}
   m_AABB:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0, y: 0, z: 0}
-  m_DirtyAABB: 1
+    m_Center: {x: 0.000056266785, y: 1.054094, z: -0.00000029802322}
+    m_Extent: {x: 0.8213892, y: 1.0971841, z: 0.8213374}
+  m_DirtyAABB: 0
 --- !u!64 &-8679605194334815807
 MeshCollider:
   m_ObjectHideFlags: 0
