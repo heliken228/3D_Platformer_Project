@@ -12,6 +12,7 @@ GameObject:
   - component: {fileID: -5754084199372789682}
   - component: {fileID: -7511558181221131132}
   - component: {fileID: -7807593803191695954}
+  - component: {fileID: 9211173472906928657}
   m_Layer: 0
   m_Name: obstacle_17_001
   m_TagString: Untagged
@@ -110,3 +111,20 @@ MeshCollider:
   m_Convex: 1
   m_CookingOptions: 30
   m_Mesh: {fileID: 4935170140222870039, guid: c3c1f56776692ef41a30294b11843d94, type: 3}
+--- !u!114 &9211173472906928657
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132149155446097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2b8e0f057cb52a7448d25574569d4d54, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _rotationAxis: {x: 0, y: 1, z: 0}
+  _speed: 50
+  _rotationAngle: 0
+  _loopRotate: 1
+  _invertLoopRotate: 0
