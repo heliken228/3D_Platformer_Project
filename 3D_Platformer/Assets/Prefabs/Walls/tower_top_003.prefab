@@ -86,9 +86,9 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 0}
   m_AABB:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0, y: 0, z: 0}
-  m_DirtyAABB: 1
+    m_Center: {x: 0.00000756979, y: 1.007332, z: -0.0000019073486}
+    m_Extent: {x: 0.61826557, y: 1.0532457, z: 0.6182655}
+  m_DirtyAABB: 0
 --- !u!64 &3892136587514791700
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -110,4 +110,4 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
+  m_Mesh: {fileID: -4191306820943601691, guid: b7b8be7cad1fc5e4c87f7a802baa3189, type: 3}

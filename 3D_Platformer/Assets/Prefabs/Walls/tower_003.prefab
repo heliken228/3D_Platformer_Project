@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: -8679921383154817045}
   - component: {fileID: -3887185075125053422}
   - component: {fileID: 1760402884438360260}
+  - component: {fileID: 1475981615864526471}
   m_Layer: 0
   m_Name: tower_003
   m_TagString: Untagged
@@ -86,9 +87,9 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 0}
   m_AABB:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0, y: 0, z: 0}
-  m_DirtyAABB: 1
+    m_Center: {x: 0, y: 1.5449542, z: -0.00000023841858}
+    m_Extent: {x: 0.57753134, y: 1.5916384, z: 0.5775314}
+  m_DirtyAABB: 0
 --- !u!64 &1760402884438360260
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -110,4 +111,19 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
+  m_Mesh: {fileID: -6588669734998671071, guid: b44689b846576e049bc259dd53c02782, type: 3}
+--- !u!114 &1475981615864526471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132149155446097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e5c7319bcd36be4b99a3e74b1bd0150, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _skinnedMeshRenderer: {fileID: -3887185075125053422}
+  _blendShapeIndex: 0
+  _animationDuration: 0.5

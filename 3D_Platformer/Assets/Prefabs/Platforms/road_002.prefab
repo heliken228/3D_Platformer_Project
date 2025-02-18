@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: -8679921383154817045}
   - component: {fileID: -3887185075125053422}
   - component: {fileID: -4738018627762715948}
+  - component: {fileID: 5869799660156992360}
   m_Layer: 0
   m_Name: road_002
   m_TagString: Untagged
@@ -86,9 +87,9 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 0}
   m_AABB:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0, y: 0, z: 0}
-  m_DirtyAABB: 1
+    m_Center: {x: -0.000000834465, y: 0.017964035, z: -0.03773856}
+    m_Extent: {x: 3.223053, y: 0.74485207, z: 6.994982}
+  m_DirtyAABB: 0
 --- !u!64 &-4738018627762715948
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -108,6 +109,21 @@ MeshCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 5
-  m_Convex: 1
+  m_Convex: 0
   m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
+  m_Mesh: {fileID: 6233586778331634199, guid: 290ad2636b371514b9323f2cf3f26a0b, type: 3}
+--- !u!114 &5869799660156992360
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132149155446097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e5c7319bcd36be4b99a3e74b1bd0150, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _skinnedMeshRenderer: {fileID: -3887185075125053422}
+  _blendShapeIndex: 0
+  _animationDuration: 0.5
