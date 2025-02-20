@@ -5,7 +5,7 @@ public class CoinRotator : MonoBehaviour
     [SerializeField] private float _rotationSpeed = 100f;
     public CollectibleType type;
 
-    void Update()
+    private void Update()
     {
         transform.Rotate(Vector3.up, _rotationSpeed * Time.deltaTime);
     }

@@ -284,6 +284,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Base_Mesh
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: ad472b939cd48144e9521d873c2e3018, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 1630794972795428178, guid: ad472b939cd48144e9521d873c2e3018, type: 3}
       propertyPath: 'm_Materials.Array.data[0]'
       value: 
@@ -347,7 +351,11 @@ PrefabInstance:
     - target: {fileID: 5866666021909216657, guid: ad472b939cd48144e9521d873c2e3018, type: 3}
       propertyPath: m_Controller
       value: 
-      objectReference: {fileID: 9100000, guid: fac54571ff27f2b46b28cd6d82cd3c4c, type: 2}
+      objectReference: {fileID: 9100000, guid: f09728e1b264a4347abace6250738487, type: 2}
+    - target: {fileID: 5866666021909216657, guid: ad472b939cd48144e9521d873c2e3018, type: 3}
+      propertyPath: m_ApplyRootMotion
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6761708314861323176, guid: ad472b939cd48144e9521d873c2e3018, type: 3}
       propertyPath: m_AABB.m_Center.x
       value: 0.010242268

@@ -30,7 +30,7 @@ public class CoinCounter : MonoBehaviour
         }
     }
 
-    void Start()
+    private void Start()
     {
         UpdateCoinText();
         UpdateGemText();
