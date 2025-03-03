@@ -8,7 +8,9 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private float _gravity = -9.81f;
     [SerializeField] private float _jumpHeight;
     
-    private CharacterController _characterController;
+    [SerializeField] private AudioSource _jumpSound;
+    
+    private Rigidbody _rigidbody;
     private Vector3 _velocity;
     private bool _isGrounded;
     private Animator _animator;
@@ -21,15 +23,18 @@ public class CharacterMovement : MonoBehaviour
     private void Start()
     {
         _animator = GetComponentInChildren<Animator>();
-        _characterController = GetComponent<CharacterController>();
+        _rigidbody = GetComponent<Rigidbody>();
     }
 
     private void Update()
     {
         CheckGrounded();
-        HandleMovement();
         HandleJump();
-        ApplyGravity();
+    }
+    
+    private void FixedUpdate()
+    {
+        HandleMovement();
     }
 
     private void CheckGrounded()
@@ -53,7 +58,8 @@ public class CharacterMovement : MonoBehaviour
         
         move.y = 0;   // Убираем вертикальное смещение, чтобы игрок не взлетал или не опускался
         
-        _characterController.Move(move * _speed * Time.deltaTime);    // Применение движения
+        Vector3 targetVelocity = move * _speed;
+        _rigidbody.linearVelocity = new Vector3(targetVelocity.x, _rigidbody.linearVelocity.y, targetVelocity.z);
         
         if (move.magnitude > 0)    // Если игрок движется, поворачиваем его в направлении движения
         {
@@ -69,15 +75,11 @@ public class CharacterMovement : MonoBehaviour
     {
         if (Input.GetButtonDown("Jump") && _isGrounded)
         {
-            _velocity.y = Mathf.Sqrt(_jumpHeight * -1f * _gravity);
+            float jumpVelocity = Mathf.Sqrt(_jumpHeight * -2f * _gravity);
+            _rigidbody.linearVelocity = new Vector3(_rigidbody.linearVelocity.x, jumpVelocity, _rigidbody.linearVelocity.z);
             _animator.SetBool("Jump", true);
             _animator.SetBool("IsGrounded", false);
+            _jumpSound.Play();
         }
-    }
-    
-    private void ApplyGravity()
-    {
-        _velocity.y += _gravity * Time.deltaTime;
-        _characterController.Move(_velocity * Time.deltaTime);
     }
 }

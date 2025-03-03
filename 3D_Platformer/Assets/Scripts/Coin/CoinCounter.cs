@@ -5,6 +5,8 @@ public class CoinCounter : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _coinText;
     [SerializeField] private TextMeshProUGUI _gemText;
+    [SerializeField] private AudioSource _coinSound;
+    [SerializeField] private AudioSource _gemSound;
 
     private int _coinCount = 0;
     private int _gemCount = 0;
@@ -40,11 +42,13 @@ public class CoinCounter : MonoBehaviour
     {
         _coinCount++;
         UpdateCoinText();
+        _coinSound.Play();
     }
     public void AddDiamond()
     {
         _gemCount++;
         UpdateGemText();
+        _gemSound.Play();
     }
     private void UpdateCoinText()
     {
