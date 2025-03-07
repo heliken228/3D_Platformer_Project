@@ -7,14 +7,14 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] private float _rotationSpeed;
     [SerializeField] private float _gravity = -9.81f;
     [SerializeField] private float _jumpHeight;
-    
+
     [SerializeField] private AudioSource _jumpSound;
-    
+
     private Rigidbody _rigidbody;
     private Vector3 _velocity;
     private bool _isGrounded;
     private Animator _animator;
-    
+
     public Transform groundCheck;
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
@@ -24,17 +24,12 @@ public class CharacterMovement : MonoBehaviour
     {
         _animator = GetComponentInChildren<Animator>();
         _rigidbody = GetComponent<Rigidbody>();
+        cameraTransform = GameObject.Find("FreeLook Camera").transform;
     }
 
-    private void Update()
-    {
-        CheckGrounded();
-        HandleJump();
-    }
-    
     private void FixedUpdate()
     {
-        HandleMovement();
+        CheckGrounded();
     }
 
     private void CheckGrounded()
@@ -49,31 +44,23 @@ public class CharacterMovement : MonoBehaviour
         }
     }
 
-    private void HandleMovement()
+    public void Move(Vector3 moveDirection)
     {
-        float x = Input.GetAxis("Horizontal");
-        float z = Input.GetAxis("Vertical");
-        
-        Vector3 move = cameraTransform.right * x + cameraTransform.forward * z;  // Вычисление направления движения относительно камеры
-        
-        move.y = 0;   // Убираем вертикальное смещение, чтобы игрок не взлетал или не опускался
-        
-        Vector3 targetVelocity = move * _speed;
+        Vector3 targetVelocity = moveDirection * _speed;
         _rigidbody.linearVelocity = new Vector3(targetVelocity.x, _rigidbody.linearVelocity.y, targetVelocity.z);
-        
-        if (move.magnitude > 0)    // Если игрок движется, поворачиваем его в направлении движения
+
+        if (moveDirection.magnitude > 0)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(move);    // Целевое вращение
-            
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);   // Плавный поворот
+            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
         }
 
-        _animator.SetBool("Run", move.magnitude > 0);
+        _animator.SetBool("Run", moveDirection.magnitude > 0);
     }
 
-    private void HandleJump()
+    public void Jump()
     {
-        if (Input.GetButtonDown("Jump") && _isGrounded)
+        if (_isGrounded)
         {
             float jumpVelocity = Mathf.Sqrt(_jumpHeight * -2f * _gravity);
             _rigidbody.linearVelocity = new Vector3(_rigidbody.linearVelocity.x, jumpVelocity, _rigidbody.linearVelocity.z);
