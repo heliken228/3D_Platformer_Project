@@ -15,16 +15,22 @@ public class LevelInstaller : MonoInstaller
         BindPlayerMovement();
         BindPlayerInput();
         Container.Bind<GameObject>().FromInstance(Camera).AsSingle();
-        Container.BindInstance(PlayerPrefab).WhenInjectedInto<CharacterMovement>();
     }
 
-    private void BindPlayerInput()
+    private void BindPlayerInput()    //Этот метод привязывает компонент InputController из PlayerPrefab как единственный экземпляр.
     {
-        Container.Bind<PlayerInput>().FromInstance(PlayerPrefab.GetComponent<PlayerInput>()).AsSingle();
-        Container.BindInstance(PlayerPrefab).WhenInjectedInto<CharacterMovement>();
+        InputController inputController = PlayerPrefab.GetComponent<InputController>();
+        if (inputController != null)
+        {
+            Container.Bind<InputController>().FromInstance(inputController).AsSingle();
+        }
+        else
+        {
+            Debug.LogError("PlayerInput component not found on the PlayerPrefab.");
+        }
     }
 
-    private void BindPlayerMovement()
+    private void BindPlayerMovement()   //Этот метод создаёт экземпляр CharacterMovement из PlayerPrefab в позиции StartPoint.
     {
         CharacterMovement characterMovement =
             Container.InstantiatePrefabForComponent<CharacterMovement>(PlayerPrefab, StartPoint.position,

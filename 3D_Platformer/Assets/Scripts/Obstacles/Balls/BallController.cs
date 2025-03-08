@@ -3,31 +3,38 @@ using UnityEngine;
 public class BallController : MonoBehaviour
 {
     [SerializeField] private GameObject _ballPrefab;
-    [SerializeField] private Transform _spawnPoint;
-    [SerializeField] private float _forceMagnitude = 10f;
+    [SerializeField] private Transform _spawnPoint1;
+    [SerializeField] private Transform _spawnPoint2;
+    [SerializeField] private float _forceMagnitude = 2000f;
     [SerializeField] private Vector3 _forceDirection = Vector3.back;
+    [SerializeField] private float _spawnInterval = 5f;
 
     private BallPoolObject _poolObject;
-    private Rigidbody _rigidbody;
+    private float _timeSinceLastSpawn = 0f;
 
     private void Start()
     {
-        _rigidbody = GetComponent<Rigidbody>();
         _poolObject = new BallPoolObject(_ballPrefab, 10);
     }
 
     private void Update()
     {
-        if (Input.GetKeyDown(KeyCode.P))
+        _timeSinceLastSpawn += Time.deltaTime;
+
+        if (_timeSinceLastSpawn >= _spawnInterval)
         {
             SpawnBall();
+            _timeSinceLastSpawn = 0f;
         }
     }
 
     private void SpawnBall()
     {
         GameObject ball = _poolObject.GetObject();
-        ball.transform.position = _spawnPoint.position;
+
+        // Выбираем случайную точку спавна
+        Transform spawnPoint = Random.value < 0.5f ? _spawnPoint1 : _spawnPoint2;
+        ball.transform.position = spawnPoint.position;
         ball.SetActive(true);
 
         // Применяем силу к шару
