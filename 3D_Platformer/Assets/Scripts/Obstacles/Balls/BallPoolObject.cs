@@ -1,21 +1,24 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
 public class BallPoolObject : MonoBehaviour
 {
     [SerializeField] private GameObject _pooledObjectPrefab;
+    [SerializeField] private Transform _spawnPoint1;
+    [SerializeField] private Transform _spawnPoint2;
     private List<GameObject> _pooledObjects;
     private int _poolSize = 10;
 
-    public BallPoolObject(GameObject prefab, int size)
+    private void Awake()
     {
-        _pooledObjectPrefab = prefab;
-        _poolSize = size;
         _pooledObjects = new List<GameObject>();
 
         for (int i = 0; i < _poolSize; i++)
         {
-            CreateNewObject();
+            GameObject ball = Instantiate(_pooledObjectPrefab);
+            ball.SetActive(false);
+            _pooledObjects.Add(ball);
         }
     }
 
@@ -25,6 +28,11 @@ public class BallPoolObject : MonoBehaviour
         {
             if (!obj.activeInHierarchy)
             {
+                // Выбираем случайную точку спавна
+                Transform spawnPoint = Random.value < 0.5f ? _spawnPoint1 : _spawnPoint2;
+                obj.transform.position = spawnPoint.position;
+                obj.SetActive(true);
+                StartCoroutine(ReturnToPoolAfterDelay(obj, 10f));
                 return obj;
             }
         }
@@ -36,6 +44,8 @@ public class BallPoolObject : MonoBehaviour
     public void ReturnObject(GameObject obj)
     {
         obj.SetActive(false);
+        obj.transform.rotation = Quaternion.identity;
+        
     }
 
     private GameObject CreateNewObject()
@@ -44,5 +54,11 @@ public class BallPoolObject : MonoBehaviour
         newObj.SetActive(false);
         _pooledObjects.Add(newObj);
         return newObj;
+    }
+    
+    private IEnumerator ReturnToPoolAfterDelay(GameObject obj, float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        ReturnObject(obj);
     }
 }

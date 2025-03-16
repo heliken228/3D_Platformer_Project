@@ -1,9 +1,12 @@
 using UnityEngine;
 
-public class CoinRotator : MonoBehaviour
+public class BonusHandler : MonoBehaviour
 {
     [SerializeField] private float _rotationSpeed = 100f;
     public CollectibleType type;
+
+    public delegate void OnColliderBonus(CollectibleType type);
+    public static event OnColliderBonus OnBonusTake;
 
     private void Update()
     {
@@ -17,11 +20,11 @@ public class CoinRotator : MonoBehaviour
             gameObject.SetActive(false);
             if (type == CollectibleType.Coin)
             {
-                CoinCounter.Instance.AddCoin();
+                OnBonusTake?.Invoke(type);
             }
             else if (type == CollectibleType.Gem)
             {
-                CoinCounter.Instance.AddDiamond();
+                OnBonusTake?.Invoke(type);
             }
         }
     }

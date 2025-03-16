@@ -1,8 +1,13 @@
 using UnityEngine;
-using UnityEngine.EventSystems;
+using UnityEngine.InputSystem;
 
-public class CharacterMovement : MonoBehaviour
+public class PlayerController : MonoBehaviour
 {
+    private InputSystem_Actions _inputSystem;
+    private InputAction _movement;
+    private InputAction _jump;
+    private Vector2 _movementVector;
+    
     [SerializeField] private float _speed;
     [SerializeField] private float _rotationSpeed;
     [SerializeField] private float _gravity = -9.81f;
@@ -18,18 +23,35 @@ public class CharacterMovement : MonoBehaviour
     public Transform groundCheck;
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
-    public Transform cameraTransform;
+    
 
-    private void Start()
+    private void Awake()
     {
         _animator = GetComponentInChildren<Animator>();
         _rigidbody = GetComponent<Rigidbody>();
-        cameraTransform = GameObject.Find("FreeLook Camera").transform;
+        _inputSystem = new InputSystem_Actions();
+    }
+
+    private void OnEnable()
+    {
+        _movement = _inputSystem.Player.Move;
+        _movement.Enable();
+        
+        _inputSystem.Player.Jump.performed += Jump;
+        _inputSystem.Player.Jump.Enable();
+    }
+
+    private void OnDisable()
+    {
+        _movement.Disable();
+        _inputSystem.Player.Jump.performed -= Jump;
     }
 
     private void FixedUpdate()
     {
         CheckGrounded();
+        _movementVector = _movement.ReadValue<Vector2>();
+        Move(_movementVector);
     }
 
     private void CheckGrounded()
@@ -46,19 +68,20 @@ public class CharacterMovement : MonoBehaviour
 
     public void Move(Vector3 moveDirection)
     {
-        Vector3 targetVelocity = moveDirection * _speed;
+        Vector3 targetVelocity = new Vector3(moveDirection.x, 0, moveDirection.y) * _speed;
         _rigidbody.linearVelocity = new Vector3(targetVelocity.x, _rigidbody.linearVelocity.y, targetVelocity.z);
 
         if (moveDirection.magnitude > 0)
         {
-            Quaternion targetRotation = Quaternion.LookRotation(moveDirection);
+            Vector3 direction = new Vector3(moveDirection.x, 0, moveDirection.y);
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
         }
 
         _animator.SetBool("Run", moveDirection.magnitude > 0);
     }
 
-    public void Jump()
+    public void Jump(InputAction.CallbackContext context)
     {
         if (_isGrounded)
         {
