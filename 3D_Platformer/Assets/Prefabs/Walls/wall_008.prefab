@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: -8679921383154817045}
   - component: {fileID: -3887185075125053422}
   - component: {fileID: -7308245694598366155}
+  - component: {fileID: 4588256796905935967}
   m_Layer: 0
   m_Name: wall_008
   m_TagString: Untagged
@@ -86,9 +87,9 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 0}
   m_AABB:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0, y: 0, z: 0}
-  m_DirtyAABB: 1
+    m_Center: {x: 0, y: 0.77881503, z: 0}
+    m_Extent: {x: 3.0458498, y: 0.8228259, z: 0.3296411}
+  m_DirtyAABB: 0
 --- !u!64 &-7308245694598366155
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -110,4 +111,19 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
+  m_Mesh: {fileID: 1640155875089087412, guid: d5dc368436f083444966ecc77c44e4b1, type: 3}
+--- !u!114 &4588256796905935967
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132149155446097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e5c7319bcd36be4b99a3e74b1bd0150, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _skinnedMeshRenderer: {fileID: -3887185075125053422}
+  _blendShapeIndex: 0
+  _animationDuration: 0.5

@@ -1,7 +1,7 @@
 using UnityEngine;
 using Zenject;
 
-public class LevelInstaller : MonoInstaller
+public class PlayerInstaller : MonoInstaller
 {
     public Transform StartPoint;
     public GameObject PlayerPrefab;

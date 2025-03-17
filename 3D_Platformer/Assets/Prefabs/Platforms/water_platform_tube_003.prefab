@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: -8679921383154817045}
   - component: {fileID: -3887185075125053422}
   - component: {fileID: 8762575759254382426}
+  - component: {fileID: 2366882575414146463}
   m_Layer: 0
   m_Name: water_platform_tube_003
   m_TagString: Untagged
@@ -86,9 +87,9 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 0}
   m_AABB:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0, y: 0, z: 0}
-  m_DirtyAABB: 1
+    m_Center: {x: 0, y: 1.741805, z: 0.00000011920929}
+    m_Extent: {x: 1.8000224, y: 1.8366367, z: 1.8000222}
+  m_DirtyAABB: 0
 --- !u!64 &8762575759254382426
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -110,4 +111,19 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
+  m_Mesh: {fileID: 687835515662871470, guid: aedb1374eb9fe90408336e2db2f4aa82, type: 3}
+--- !u!114 &2366882575414146463
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132149155446097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e5c7319bcd36be4b99a3e74b1bd0150, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _skinnedMeshRenderer: {fileID: -3887185075125053422}
+  _blendShapeIndex: 0
+  _animationDuration: 0.5

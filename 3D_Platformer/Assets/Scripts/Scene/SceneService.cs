@@ -10,40 +10,47 @@ public class SceneService : MonoBehaviour
     [SerializeField] private TMP_Text _loadingText;
     [SerializeField] private Button _startButton;
     
-    private AsyncOperation asyncLoad;
+    private AsyncOperation _asyncLoad;
+    private int _currentSceneIndex = 0;
+    private string[] _sceneNames = { "Level_1", "Level_2", "Level_3" };
+    
     private void Start()
     {
-        // Скрываем кнопку "Начать" при старте
         _startButton.gameObject.SetActive(false);
         _startButton.onClick.AddListener(OnStartButtonClicked); // Добавляем обработчик нажатия на кнопку
+        
+        _currentSceneIndex = System.Array.IndexOf(_sceneNames, SceneManager.GetActiveScene().name);   // Определяем индекс текущей сцены
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player")) // Проверяем, что это игрок
+        if (other.CompareTag("Player"))
         {
-            LoadScene("Level_2");
+            LoadNextScene();
         }
     }
 
-    public void LoadScene(string sceneName)
+    public void LoadNextScene()
     {
+        int nextSceneIndex = (_currentSceneIndex + 1) % _sceneNames.Length;  // Увеличиваем индекс для загрузки следующей сцены
+        string nextSceneName = _sceneNames[nextSceneIndex];
+
         _loadingCanvas.gameObject.SetActive(true); // Активируем Canvas с надписью "Loading"
-        StartCoroutine(LoadSceneAsync(sceneName));
+        StartCoroutine(LoadSceneAsync(nextSceneName));
     }
 
     private IEnumerator LoadSceneAsync(string sceneName)
     {
-        asyncLoad = SceneManager.LoadSceneAsync(sceneName);
-        asyncLoad.allowSceneActivation = false; // Запрещаем автоматическую активацию сцены
+        _asyncLoad = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+        _asyncLoad.allowSceneActivation = false; // Запрещаем автоматическую активацию сцены
 
-        while (!asyncLoad.isDone)
+        while (!_asyncLoad.isDone)
         {
-            float progress = Mathf.Clamp01(asyncLoad.progress / 0.9f); // Прогресс от 0 до 1
+            float progress = Mathf.Clamp01(_asyncLoad.progress / 0.9f); // Прогресс от 0 до 1
             _loadingText.text = $"Loading: {(progress * 100f):0}%"; // Обновляем текст прогресса
 
             // Когда загрузка завершена, но сцена ещё не активирована
-            if (asyncLoad.progress >= 0.9f)
+            if (_asyncLoad.progress >= 0.9f)
             {
                 _loadingText.text = "Loading: 100%"; // Устанавливаем 100%
                 _startButton.gameObject.SetActive(true); // Показываем кнопку "Начать"
@@ -56,12 +63,26 @@ public class SceneService : MonoBehaviour
     private void OnStartButtonClicked()
     {
         // Активируем сцену, когда игрок нажимает кнопку "Начать"
-        asyncLoad.allowSceneActivation = true;
+        _asyncLoad.allowSceneActivation = true;
         _startButton.gameObject.SetActive(false); // Скрываем кнопку после нажатия
+        
+        // Выгружаем предыдущую сцену
+        StartCoroutine(UnloadPreviousScene());
     }
 
-    private void UnloadScene(string sceneName)
+    private IEnumerator UnloadPreviousScene()
     {
-        SceneManager.UnloadSceneAsync(sceneName);
+        // Ждем, пока новая сцена не будет активирована
+        yield return new WaitUntil(() => _asyncLoad.isDone);
+
+        // Выгружаем предыдущую сцену
+        AsyncOperation unloadOperation = SceneManager.UnloadSceneAsync(_sceneNames[_currentSceneIndex]);
+        while (!unloadOperation.isDone)
+        {
+            yield return null;
+        }
+
+        // Обновляем индекс текущей сцены
+        _currentSceneIndex = (_currentSceneIndex + 1) % _sceneNames.Length;
     }
 }
