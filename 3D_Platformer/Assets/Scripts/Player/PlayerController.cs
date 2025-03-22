@@ -34,6 +34,12 @@ public class PlayerController : MonoBehaviour
 
     private void OnEnable()
     {
+        Debug.Log(_inputSystem.Player);
+        
+        if (!_inputSystem.Player.enabled)
+        {
+            _inputSystem.Player.Enable();
+        }
         _movement = _inputSystem.Player.Move;
         _movement.Enable();
         
@@ -43,8 +49,15 @@ public class PlayerController : MonoBehaviour
 
     private void OnDisable()
     {
-        _movement.Disable();
-        _inputSystem.Player.Jump.performed -= Jump;
+        
+            _inputSystem.Player.Jump.performed -= Jump;
+        
+        
+    }
+
+    private void OnDestroy()
+    {
+        _inputSystem.Player.Disable();
     }
 
     private void FixedUpdate()

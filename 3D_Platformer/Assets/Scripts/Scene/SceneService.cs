@@ -3,6 +3,7 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Zenject;
 
 public class SceneService : MonoBehaviour
 {
@@ -13,13 +14,24 @@ public class SceneService : MonoBehaviour
     private AsyncOperation _asyncLoad;
     private int _currentSceneIndex = 0;
     private string[] _sceneNames = { "Level_1", "Level_2", "Level_3" };
+
+    /*[Inject] 
+    public void Construction(Canvas canvas)
+    {
+        _loadingCanvas = canvas;
+        _startButton = canvas.GetComponentInChildren<Button>();
+    }*/
     
     private void Start()
     {
         _startButton.gameObject.SetActive(false);
-        _startButton.onClick.AddListener(OnStartButtonClicked); // Добавляем обработчик нажатия на кнопку
+        //_startButton.onClick.AddListener(OnStartButtonClicked); // Добавляем обработчик нажатия на кнопку
         
-        _currentSceneIndex = System.Array.IndexOf(_sceneNames, SceneManager.GetActiveScene().name);   // Определяем индекс текущей сцены
+        string activeSceneName = SceneManager.GetActiveScene().name;
+        Debug.Log("Active Scene: " + activeSceneName);
+        
+        _currentSceneIndex = SceneManager.GetActiveScene().buildIndex;   // Определяем индекс текущей сцены
+        Debug.Log(_currentSceneIndex);
     }
 
     private void OnTriggerEnter(Collider other)
@@ -32,16 +44,17 @@ public class SceneService : MonoBehaviour
 
     public void LoadNextScene()
     {
-        int nextSceneIndex = (_currentSceneIndex + 1) % _sceneNames.Length;  // Увеличиваем индекс для загрузки следующей сцены
+        int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
         string nextSceneName = _sceneNames[nextSceneIndex];
+        Debug.Log("загружаем сцену номер " + nextSceneIndex);
 
         _loadingCanvas.gameObject.SetActive(true); // Активируем Canvas с надписью "Loading"
-        StartCoroutine(LoadSceneAsync(nextSceneName));
+        StartCoroutine(SceneLoad(nextSceneIndex));
     }
 
-    private IEnumerator LoadSceneAsync(string sceneName)
+    private IEnumerator SceneLoad(int sceneName)
     {
-        _asyncLoad = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Additive);
+        _asyncLoad = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
         _asyncLoad.allowSceneActivation = false; // Запрещаем автоматическую активацию сцены
 
         while (!_asyncLoad.isDone)
@@ -60,29 +73,17 @@ public class SceneService : MonoBehaviour
         }
     }
 
-    private void OnStartButtonClicked()
+    public void OnStartButtonClicked()
     {
+        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
+        if (SceneManager.GetActiveScene().buildIndex > 0)
+        {
+            SceneManager.UnloadSceneAsync(currentSceneIndex - 1);
+            Debug.Log("1");
+        }
         // Активируем сцену, когда игрок нажимает кнопку "Начать"
         _asyncLoad.allowSceneActivation = true;
         _startButton.gameObject.SetActive(false); // Скрываем кнопку после нажатия
         
-        // Выгружаем предыдущую сцену
-        StartCoroutine(UnloadPreviousScene());
-    }
-
-    private IEnumerator UnloadPreviousScene()
-    {
-        // Ждем, пока новая сцена не будет активирована
-        yield return new WaitUntil(() => _asyncLoad.isDone);
-
-        // Выгружаем предыдущую сцену
-        AsyncOperation unloadOperation = SceneManager.UnloadSceneAsync(_sceneNames[_currentSceneIndex]);
-        while (!unloadOperation.isDone)
-        {
-            yield return null;
-        }
-
-        // Обновляем индекс текущей сцены
-        _currentSceneIndex = (_currentSceneIndex + 1) % _sceneNames.Length;
     }
 }
