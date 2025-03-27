@@ -7,31 +7,52 @@ using Zenject;
 
 public class SceneService : MonoBehaviour
 {
-    [SerializeField] private Canvas _loadingCanvas;
-    [SerializeField] private TMP_Text _loadingText;
-    [SerializeField] private Button _startButton;
+    private static bool _isFirstLaunch = true;    //Статическая переменная сохраняет свое значение между сценами, пока игра не будет перезапущена.
+    
+    private Canvas _loadingCanvas;
+    private TMP_Text _loadingText;
+    private Button _startButton;
+    private Canvas _mainMenuCanvas;
+    private Button _mainMenuButton;
     
     private AsyncOperation _asyncLoad;
     private int _currentSceneIndex = 0;
-    private string[] _sceneNames = { "Level_1", "Level_2", "Level_3" };
 
-    /*[Inject] 
-    public void Construction(Canvas canvas)
+    [Inject] 
+    public void Construction(UILoadingPanel loadingPanel, UIMainMenu mainMenu)
     {
-        _loadingCanvas = canvas;
-        _startButton = canvas.GetComponentInChildren<Button>();
-    }*/
+        _loadingCanvas = loadingPanel.CanvasPanel;
+        _loadingText = loadingPanel.LoadingText;
+        _startButton = loadingPanel.Button;
+
+        _mainMenuCanvas = mainMenu.MainMenuCanvas;
+        _mainMenuButton = mainMenu.MainMenuButton;
+    }
     
     private void Start()
     {
-        _startButton.gameObject.SetActive(false);
-        //_startButton.onClick.AddListener(OnStartButtonClicked); // Добавляем обработчик нажатия на кнопку
-        
-        string activeSceneName = SceneManager.GetActiveScene().name;
-        Debug.Log("Active Scene: " + activeSceneName);
-        
         _currentSceneIndex = SceneManager.GetActiveScene().buildIndex;   // Определяем индекс текущей сцены
-        Debug.Log(_currentSceneIndex);
+        Debug.Log("Индекс текущей сцены: " + _currentSceneIndex);
+
+        // Активируем главное меню только при первом запуске
+        if (_isFirstLaunch)
+        {
+            _mainMenuCanvas.enabled = true;
+            _mainMenuButton.onClick.AddListener(LoadFirstScene);
+            _isFirstLaunch = false;
+        }
+        else
+        {
+            _mainMenuCanvas.enabled = false;
+        }
+
+        _loadingCanvas.enabled = false;
+        _startButton.onClick.AddListener(OnStartButtonClicked);
+    }
+
+    private void LoadFirstScene()
+    {
+        _mainMenuCanvas.enabled = false;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -39,23 +60,23 @@ public class SceneService : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             LoadNextScene();
+            _loadingCanvas.enabled = true;
         }
     }
 
     public void LoadNextScene()
     {
         int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
-        string nextSceneName = _sceneNames[nextSceneIndex];
-        Debug.Log("загружаем сцену номер " + nextSceneIndex);
+        Debug.Log("Индекс загружаемой сцены: " + nextSceneIndex);
 
         _loadingCanvas.gameObject.SetActive(true); // Активируем Canvas с надписью "Loading"
         StartCoroutine(SceneLoad(nextSceneIndex));
     }
 
-    private IEnumerator SceneLoad(int sceneName)
+    private IEnumerator SceneLoad(int sceneIndex)
     {
-        _asyncLoad = SceneManager.LoadSceneAsync(sceneName, LoadSceneMode.Single);
-        _asyncLoad.allowSceneActivation = false; // Запрещаем автоматическую активацию сцены
+        _asyncLoad = SceneManager.LoadSceneAsync(sceneIndex, LoadSceneMode.Single);
+        _asyncLoad.allowSceneActivation = false;
 
         while (!_asyncLoad.isDone)
         {
@@ -76,11 +97,16 @@ public class SceneService : MonoBehaviour
     public void OnStartButtonClicked()
     {
         int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        if (SceneManager.GetActiveScene().buildIndex > 0)
+        
+        if (currentSceneIndex > 0)
         {
-            SceneManager.UnloadSceneAsync(currentSceneIndex - 1);
-            Debug.Log("1");
+            int previousSceneIndex = currentSceneIndex - 1;
+            if (SceneManager.GetSceneByBuildIndex(previousSceneIndex).isLoaded)
+            {
+                SceneManager.UnloadSceneAsync(previousSceneIndex);
+            }
         }
+        
         // Активируем сцену, когда игрок нажимает кнопку "Начать"
         _asyncLoad.allowSceneActivation = true;
         _startButton.gameObject.SetActive(false); // Скрываем кнопку после нажатия

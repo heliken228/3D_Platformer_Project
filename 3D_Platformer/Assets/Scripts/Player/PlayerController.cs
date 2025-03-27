@@ -34,12 +34,7 @@ public class PlayerController : MonoBehaviour
 
     private void OnEnable()
     {
-        Debug.Log(_inputSystem.Player);
-        
-        if (!_inputSystem.Player.enabled)
-        {
-            _inputSystem.Player.Enable();
-        }
+        _inputSystem.Player.Enable();
         _movement = _inputSystem.Player.Move;
         _movement.Enable();
         
@@ -49,10 +44,9 @@ public class PlayerController : MonoBehaviour
 
     private void OnDisable()
     {
-        
-            _inputSystem.Player.Jump.performed -= Jump;
-        
-        
+        _inputSystem.Player.Jump.performed -= Jump;
+        _movement.Disable();
+        _inputSystem.Player.Jump.Disable();
     }
 
     private void OnDestroy()
@@ -84,14 +78,14 @@ public class PlayerController : MonoBehaviour
         Vector3 targetVelocity = new Vector3(moveDirection.x, 0, moveDirection.y) * _speed;
         _rigidbody.linearVelocity = new Vector3(targetVelocity.x, _rigidbody.linearVelocity.y, targetVelocity.z);
 
-        if (moveDirection.magnitude > 0)
+        if (moveDirection.magnitude > 0.1f)
         {
             Vector3 direction = new Vector3(moveDirection.x, 0, moveDirection.y);
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
         }
 
-        _animator.SetBool("Run", moveDirection.magnitude > 0);
+        _animator.SetBool("Run", moveDirection.magnitude > 0.1f);
     }
 
     public void Jump(InputAction.CallbackContext context)
@@ -101,7 +95,6 @@ public class PlayerController : MonoBehaviour
             float jumpVelocity = Mathf.Sqrt(_jumpHeight * -2f * _gravity);
             _rigidbody.linearVelocity = new Vector3(_rigidbody.linearVelocity.x, jumpVelocity, _rigidbody.linearVelocity.z);
             _animator.SetBool("Jump", true);
-            _animator.SetBool("IsGrounded", false);
             _jumpSound.Play();
         }
     }

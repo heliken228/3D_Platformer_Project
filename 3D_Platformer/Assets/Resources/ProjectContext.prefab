@@ -75,3 +75,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   UI_LoadScene: {fileID: 4543301614913986384, guid: b6a17703701acf442b8fd574742d07ff, type: 3}
+  UI_MainMenu: {fileID: 689512938443362865, guid: 999d5afff29ad8b4d9b620f55ff888e7, type: 3}

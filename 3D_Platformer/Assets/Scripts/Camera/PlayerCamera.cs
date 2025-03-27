@@ -17,6 +17,6 @@ public class CameraFollow : MonoBehaviour
         transform.position = transform.parent.position + _offset;
 
         // Отключаем вращение камеры (оставляем только вращение по оси Z, если нужно)
-        transform.rotation = Quaternion.Euler(45f, 0, transform.rotation.eulerAngles.z);
+        transform.rotation = Quaternion.Euler(30f, 0, transform.rotation.eulerAngles.z);
     }
 }

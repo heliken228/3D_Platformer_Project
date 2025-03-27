@@ -4,21 +4,19 @@ using Zenject;
 public class BootstrapInstaller : MonoInstaller
 {
     public GameObject UI_LoadScene;
+    public GameObject UI_MainMenu;
     public override void InstallBindings()
     {
-        
         Container.Bind<BonusService>().AsSingle();
-       // Container.Bind<Canvas>().FromComponentInNewPrefab(UI_LoadScene).AsSingle().NonLazy();
-        //CreateUIPanel();
-        
-    }
 
-
-    private void CreateUIPanel()
-    {
-        GameObject uiPanel = Instantiate(UI_LoadScene);
-        Container.InjectGameObject(uiPanel);
-        Canvas canvas = uiPanel.GetComponent<Canvas>();
+        Container.Bind<UILoadingPanel>()
+            .FromComponentInNewPrefab(UI_LoadScene)
+            .AsSingle()
+            .Lazy();
         
+        Container.Bind<UIMainMenu>()
+            .FromComponentInNewPrefab(UI_MainMenu)
+            .AsSingle()
+            .Lazy();
     }
 }
