@@ -14,6 +14,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _rotationSpeed;
     [SerializeField] private float _gravity = -9.81f;
     [SerializeField] private float _jumpHeight;
+    [SerializeField] Camera _camera;
 
     [SerializeField] private AudioSource _jumpSound;
 
@@ -82,16 +83,27 @@ public class PlayerController : MonoBehaviour
 
     public void Move(Vector3 moveDirection)
     {
-        Vector3 targetVelocity = new Vector3(moveDirection.x, 0, moveDirection.y) * _speed;
+        // Получаем направление вперед и вправо камеры
+        Vector3 forward = _camera.transform.forward;
+        Vector3 right = _camera.transform.right;
+
+        // Убираем компонент Y, чтобы движение было только по плоскости XZ
+        forward.y = 0;
+        right.y = 0;
+        forward.Normalize();
+        right.Normalize();
+
+        // Вычисляем направление движения относительно камеры
+        Vector3 desiredMoveDirection = forward * moveDirection.y + right * moveDirection.x;
+
+        Vector3 targetVelocity = desiredMoveDirection * _speed;
         _rigidbody.linearVelocity = new Vector3(targetVelocity.x, _rigidbody.linearVelocity.y, targetVelocity.z);
 
-        if (moveDirection.magnitude > 0.1f)
+        if (desiredMoveDirection.magnitude > 0.1f)
         {
-            Vector3 direction = new Vector3(moveDirection.x, 0, moveDirection.y);
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            Quaternion targetRotation = Quaternion.LookRotation(desiredMoveDirection);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
         }
-
         _animator.SetBool("Run", moveDirection.magnitude > 0.1f);
     }
 

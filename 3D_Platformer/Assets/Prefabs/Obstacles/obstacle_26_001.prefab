@@ -243,7 +243,7 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 1
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 94
   m_CollisionDetection: 0
 --- !u!114 &1202222477094438051
@@ -258,8 +258,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1237cbe77b1268248a7970903f98e9e5, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Player: {fileID: 0}
-  cylinder: {fileID: 0}
 --- !u!4 &4572054062254561821 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: -8679921383154817045, guid: 4e879542651cc5b42b3cea0975fa3f11, type: 3}
