@@ -1,3 +1,5 @@
+using System;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -24,12 +26,15 @@ public class PlayerController : MonoBehaviour
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
     
+    private RagdollController _ragdollController; 
+    
 
     private void Awake()
     {
         _animator = GetComponentInChildren<Animator>();
         _rigidbody = GetComponent<Rigidbody>();
         _inputSystem = new InputSystem_Actions();
+        _ragdollController = GetComponentInChildren<RagdollController>();
     }
 
     private void OnEnable()
@@ -56,6 +61,13 @@ public class PlayerController : MonoBehaviour
 
     private void FixedUpdate()
     {
+        if (_ragdollController != null && _ragdollController.IsRagdollActive)
+        {
+            // Если ragdoll активен, не разрешаем движение
+            Debug.Log("Ragdoll активен, движение отключено.");
+            return;
+        }
+        
         CheckGrounded();
         _movementVector = _movement.ReadValue<Vector2>();
         Move(_movementVector);
@@ -66,11 +78,6 @@ public class PlayerController : MonoBehaviour
         _isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
         Debug.DrawRay(groundCheck.position, Vector3.down * groundDistance, Color.red);
         _animator.SetBool("IsGrounded", _isGrounded);
-
-        if (_isGrounded)
-        {
-            _animator.SetBool("Jump", false);
-        }
     }
 
     public void Move(Vector3 moveDirection)
@@ -90,11 +97,18 @@ public class PlayerController : MonoBehaviour
 
     public void Jump(InputAction.CallbackContext context)
     {
+        if (_ragdollController != null && _ragdollController.IsRagdollActive)
+        {
+            // Если ragdoll активен, не разрешаем прыжок
+            Debug.Log("Ragdoll активен, прыжок отключен.");
+            return;
+        }
+        
         if (_isGrounded)
         {
             float jumpVelocity = Mathf.Sqrt(_jumpHeight * -2f * _gravity);
             _rigidbody.linearVelocity = new Vector3(_rigidbody.linearVelocity.x, jumpVelocity, _rigidbody.linearVelocity.z);
-            _animator.SetBool("Jump", true);
+            _animator.SetTrigger("Jump");
             _jumpSound.Play();
         }
     }

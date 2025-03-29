@@ -1,12 +1,20 @@
 using UnityEngine;
+public enum CollectibleType
+{
+    Coin, 
+    Gem
+}
 
 public class BonusHandler : MonoBehaviour
 {
-    [SerializeField] private float _rotationSpeed = 100f;
+    public static event OnColliderBonus OnBonusTake;
+    
     public CollectibleType type;
 
     public delegate void OnColliderBonus(CollectibleType type);
-    public static event OnColliderBonus OnBonusTake;
+
+    [SerializeField] private float _rotationSpeed = 100f;
+
 
     private void Update()
     {
@@ -29,8 +37,4 @@ public class BonusHandler : MonoBehaviour
         }
     }
 }
-public enum CollectibleType
-{
-    Coin,
-    Gem
-}
+

@@ -9,7 +9,6 @@ public class BallController : MonoBehaviour
     [SerializeField] private float _spawnInterval = 5f;
 
     private BallPoolObject _poolObject;
-    private float _timeSinceLastSpawn = 0f;
 
     private void Start()
     {

@@ -9,12 +9,6 @@ public class test : MonoBehaviour
     {
         // Получаем компонент Rigidbody
         rb = GetComponent<Rigidbody>();
-
-        // Убедитесь, что Rigidbody не является кинематическим
-        if (rb != null)
-        {
-            rb.isKinematic = true;
-        }
     }
 
     void FixedUpdate()
