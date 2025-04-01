@@ -14,7 +14,7 @@ GameObject:
   - component: {fileID: 506266230548601603}
   - component: {fileID: 1185385792937557268}
   - component: {fileID: 3623561439467743022}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: obstacle_24_001
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -101,7 +101,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 919132149155446097}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 3a7680f4645d8c049923619e52f8c73a, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0
@@ -157,7 +157,7 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 0
   m_IsKinematic: 1
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 0
 --- !u!1 &1802147301577464523
@@ -171,7 +171,7 @@ GameObject:
   - component: {fileID: 373620255876955957}
   - component: {fileID: 1432248802771460644}
   - component: {fileID: 7752135989558615847}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GameObject (3)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -271,7 +271,7 @@ GameObject:
   - component: {fileID: 7416465357416001571}
   - component: {fileID: 242882969651093407}
   - component: {fileID: 3132147151305564421}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GameObject (2)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -371,7 +371,7 @@ GameObject:
   - component: {fileID: 3810373107113039772}
   - component: {fileID: 7851904314983655583}
   - component: {fileID: 966608996365672361}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GameObject
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -418,7 +418,7 @@ Rigidbody:
   m_ImplicitTensor: 1
   m_UseGravity: 1
   m_IsKinematic: 0
-  m_Interpolate: 0
+  m_Interpolate: 1
   m_Constraints: 0
   m_CollisionDetection: 0
 --- !u!59 &966608996365672361
@@ -471,7 +471,7 @@ GameObject:
   - component: {fileID: 5071268330443447424}
   - component: {fileID: 3265104621957414323}
   - component: {fileID: 7491698889979450383}
-  m_Layer: 0
+  m_Layer: 3
   m_Name: GameObject (1)
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -623,6 +623,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 1c23d1eaca3438646827f0a1542e5dae, type: 3}
       propertyPath: m_Name
       value: obstacle_24_002 (1)
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 1c23d1eaca3438646827f0a1542e5dae, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -823,6 +827,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: obstacle_24_002 (2)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 1c23d1eaca3438646827f0a1542e5dae, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1022,6 +1030,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: obstacle_24_002 (3)
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 1c23d1eaca3438646827f0a1542e5dae, type: 3}
+      propertyPath: m_Layer
+      value: 3
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -1220,6 +1232,10 @@ PrefabInstance:
     - target: {fileID: 919132149155446097, guid: 1c23d1eaca3438646827f0a1542e5dae, type: 3}
       propertyPath: m_Name
       value: obstacle_24_002
+      objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 1c23d1eaca3438646827f0a1542e5dae, type: 3}
+      propertyPath: m_Layer
+      value: 3
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

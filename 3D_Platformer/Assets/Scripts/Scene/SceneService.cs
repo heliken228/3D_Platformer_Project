@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using TMPro;
 using UnityEngine;
@@ -14,12 +15,14 @@ public class SceneService : MonoBehaviour
     private Button _startButton;
     private Canvas _mainMenuCanvas;
     private Button _mainMenuButton;
+    private Canvas _pauseMenuCanvas;
     
     private AsyncOperation _asyncLoad;
     private int _currentSceneIndex = 0;
+    private bool _bIsPaused = false;
 
     [Inject] 
-    public void Construction(UILoadingPanel loadingPanel, UIMainMenu mainMenu)
+    public void Construction(UILoadingPanel loadingPanel, UIMainMenu mainMenu, UIPause pauseMenu)
     {
         _loadingCanvas = loadingPanel.CanvasPanel;
         _loadingText = loadingPanel.LoadingText;
@@ -27,6 +30,8 @@ public class SceneService : MonoBehaviour
 
         _mainMenuCanvas = mainMenu.MainMenuCanvas;
         _mainMenuButton = mainMenu.MainMenuButton;
+
+        _pauseMenuCanvas = pauseMenu.PauseCanvas;
     }
     
     private void Start()
@@ -47,6 +52,7 @@ public class SceneService : MonoBehaviour
         }
 
         _loadingCanvas.enabled = false;
+        _pauseMenuCanvas.enabled = false;
         _startButton.onClick.AddListener(OnStartButtonClicked);
     }
 
@@ -62,6 +68,23 @@ public class SceneService : MonoBehaviour
             LoadNextScene();
             _loadingCanvas.enabled = true;
         }
+    }
+
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Escape))
+        {
+            TogglePause();
+        } 
+    }
+
+    private void TogglePause()
+    {
+        _pauseMenuCanvas.enabled = !_bIsPaused;
+        _bIsPaused = !_bIsPaused;
+        Time.timeScale = _bIsPaused ? 0 : 1;
+        //Cursor.lockState = _bIsPaused ? CursorLockMode.None : CursorLockMode.Locked;
+        //Cursor.visible = _bIsPaused;
     }
 
     public void LoadNextScene()

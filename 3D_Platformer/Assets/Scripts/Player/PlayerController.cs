@@ -72,11 +72,12 @@ public class PlayerController : MonoBehaviour
         CheckGrounded();
         _movementVector = _movement.ReadValue<Vector2>();
         Move(_movementVector);
+        Debug.Log(_isGrounded);
     }
 
     private void CheckGrounded()
     {
-        _isGrounded = Physics.CheckSphere(groundCheck.position, groundDistance, groundMask);
+        _isGrounded = Physics.Raycast(groundCheck.position, Vector3.down, groundDistance, groundMask);
         Debug.DrawRay(groundCheck.position, Vector3.down * groundDistance, Color.red);
         _animator.SetBool("IsGrounded", _isGrounded);
     }

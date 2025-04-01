@@ -86,9 +86,9 @@ SkinnedMeshRenderer:
   m_BlendShapeWeights: []
   m_RootBone: {fileID: 0}
   m_AABB:
-    m_Center: {x: 0, y: 0, z: 0}
-    m_Extent: {x: 0, y: 0, z: 0}
-  m_DirtyAABB: 1
+    m_Center: {x: 0, y: 1, z: 0}
+    m_Extent: {x: 4.095143, y: 1.1065574, z: 4.095143}
+  m_DirtyAABB: 0
 --- !u!64 &3225625860404769958
 MeshCollider:
   m_ObjectHideFlags: 0
@@ -96,7 +96,7 @@ MeshCollider:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 919132149155446097}
-  m_Material: {fileID: 0}
+  m_Material: {fileID: 13400000, guid: 3a7680f4645d8c049923619e52f8c73a, type: 2}
   m_IncludeLayers:
     serializedVersion: 2
     m_Bits: 0

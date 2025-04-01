@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class test : MonoBehaviour
+public class RigidbodyRotation : MonoBehaviour
 {
     public float rotationSpeed = 50f; // Скорость вращения в градусах в секунду
     private Rigidbody rb;
