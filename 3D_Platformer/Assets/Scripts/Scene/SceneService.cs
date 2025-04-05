@@ -13,16 +13,20 @@ public class SceneService : MonoBehaviour
     private Canvas _loadingCanvas;
     private TMP_Text _loadingText;
     private Button _startButton;
+    
     private Canvas _mainMenuCanvas;
     private Button _mainMenuButton;
+    
     private Canvas _pauseMenuCanvas;
+    
+    private AudioSource _backgroundMusic;
     
     private AsyncOperation _asyncLoad;
     private int _currentSceneIndex = 0;
     private bool _bIsPaused = false;
 
     [Inject] 
-    public void Construction(UILoadingPanel loadingPanel, UIMainMenu mainMenu, UIPause pauseMenu)
+    public void Construction(UILoadingPanel loadingPanel, UIMainMenu mainMenu, UIPause pauseMenu, BackgroundMusic backgroundMusic)
     {
         _loadingCanvas = loadingPanel.CanvasPanel;
         _loadingText = loadingPanel.LoadingText;
@@ -32,6 +36,8 @@ public class SceneService : MonoBehaviour
         _mainMenuButton = mainMenu.MainMenuButton;
 
         _pauseMenuCanvas = pauseMenu.PauseCanvas;
+
+        _backgroundMusic = backgroundMusic.BackgroundAudio.GetComponent<AudioSource>();
     }
     
     private void Start()
@@ -50,7 +56,7 @@ public class SceneService : MonoBehaviour
         {
             _mainMenuCanvas.enabled = false;
         }
-
+        
         _loadingCanvas.enabled = false;
         _pauseMenuCanvas.enabled = false;
         _startButton.onClick.AddListener(OnStartButtonClicked);
@@ -80,6 +86,7 @@ public class SceneService : MonoBehaviour
 
     private void TogglePause()
     {
+        _backgroundMusic.enabled = !_backgroundMusic.enabled;
         _pauseMenuCanvas.enabled = !_bIsPaused;
         _bIsPaused = !_bIsPaused;
         Time.timeScale = _bIsPaused ? 0 : 1;
@@ -91,7 +98,7 @@ public class SceneService : MonoBehaviour
     {
         int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
         Debug.Log("Индекс загружаемой сцены: " + nextSceneIndex);
-
+        
         _loadingCanvas.gameObject.SetActive(true); // Активируем Canvas с надписью "Loading"
         StartCoroutine(SceneLoad(nextSceneIndex));
     }

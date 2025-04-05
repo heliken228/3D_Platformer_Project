@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Zenject;
 
 public class PlayerController : MonoBehaviour
 {
@@ -18,6 +19,8 @@ public class PlayerController : MonoBehaviour
 
     [SerializeField] private AudioSource _jumpSound;
 
+    private Canvas _gameOverCanvas;
+    private Vector3 _startPosition;
     private Rigidbody _rigidbody;
     private Vector3 _velocity;
     private bool _isGrounded;
@@ -29,13 +32,20 @@ public class PlayerController : MonoBehaviour
     
     private RagdollController _ragdollController; 
     
-
+    [Inject]
+    public void Construct(UIGameOver GameOverCanvas)
+    {
+        _gameOverCanvas = GameOverCanvas.GameOverCanvas;
+    }
+    
     private void Awake()
     {
         _animator = GetComponentInChildren<Animator>();
         _rigidbody = GetComponent<Rigidbody>();
         _inputSystem = new InputSystem_Actions();
         _ragdollController = GetComponentInChildren<RagdollController>();
+        _startPosition = transform.position;
+        _gameOverCanvas.enabled = false;
     }
 
     private void OnEnable()
@@ -64,15 +74,12 @@ public class PlayerController : MonoBehaviour
     {
         if (_ragdollController != null && _ragdollController.IsRagdollActive)
         {
-            // Если ragdoll активен, не разрешаем движение
-            Debug.Log("Ragdoll активен, движение отключено.");
             return;
         }
         
         CheckGrounded();
         _movementVector = _movement.ReadValue<Vector2>();
         Move(_movementVector);
-        Debug.Log(_isGrounded);
     }
 
     private void CheckGrounded()
@@ -112,8 +119,6 @@ public class PlayerController : MonoBehaviour
     {
         if (_ragdollController != null && _ragdollController.IsRagdollActive)
         {
-            // Если ragdoll активен, не разрешаем прыжок
-            Debug.Log("Ragdoll активен, прыжок отключен.");
             return;
         }
         
@@ -124,5 +129,33 @@ public class PlayerController : MonoBehaviour
             _animator.SetTrigger("Jump");
             _jumpSound.Play();
         }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if (other.CompareTag("DeathZone"))
+        {
+            Die();
+        }
+    }
+
+    private void Die()
+    {
+        bool IsGameOver = BonusService.Instance.LoseHeart();
+        Debug.Log(IsGameOver);
+        
+        Respawn();
+
+        if (IsGameOver)
+        {
+            _gameOverCanvas.enabled = true;
+        }
+    }
+
+    private void Respawn()
+    {
+        transform.position = _startPosition;
+        _rigidbody.linearVelocity = Vector3.zero;
+        _rigidbody.angularVelocity = Vector3.zero;
     }
 }

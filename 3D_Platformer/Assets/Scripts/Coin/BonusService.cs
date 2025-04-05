@@ -1,6 +1,7 @@
 using System;
 using TMPro;
 using UnityEngine;
+using UnityEngine.UI;
 
 public class BonusService : MonoBehaviour
 {
@@ -8,9 +9,11 @@ public class BonusService : MonoBehaviour
     [SerializeField] private TextMeshProUGUI _gemText;
     [SerializeField] private AudioSource _coinSound;
     [SerializeField] private AudioSource _gemSound;
+    [SerializeField] private GameObject[] _hearts;
 
     private int _coinCount = 0;
     private int _gemCount = 0;
+    private int _currentHeartIndex = 0;
     
     public static BonusService Instance;
     
@@ -67,5 +70,22 @@ public class BonusService : MonoBehaviour
     private void UpdateGemText()
     {
         _gemText.text = _gemCount.ToString();
+    }
+    
+    public bool LoseHeart()
+    {
+        if (_currentHeartIndex < _hearts.Length)
+        {
+            Image heartImage = _hearts[_currentHeartIndex].GetComponent<Image>();
+            if (heartImage != null)
+            {
+                heartImage.color = Color.black;
+            }
+            _currentHeartIndex++;
+            
+            return _currentHeartIndex >= _hearts.Length;
+        }
+        return true;
+        
     }
 }
