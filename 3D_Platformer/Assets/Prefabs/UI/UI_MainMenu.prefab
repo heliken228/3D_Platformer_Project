@@ -242,7 +242,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   MainMenuCanvas: {fileID: 7190309754641987762}
-  MainMenuButton: {fileID: 193371169234892217}
+  MainMenuStartButton: {fileID: 193371169234892217}
+  MainMenuSettingsButton: {fileID: 8793269238558674767}
+  MainMenuAboutButton: {fileID: 2559923568971827068}
+  MainMenuExitButton: {fileID: 8031394425815788873}
 --- !u!1 &1566874657051304050
 GameObject:
   m_ObjectHideFlags: 0

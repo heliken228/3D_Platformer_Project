@@ -8,6 +8,7 @@ public class BootstrapInstaller : MonoInstaller
     public GameObject UI_Pause;
     public GameObject BackgroundMusic;
     public GameObject UI_GameOver;
+    public GameObject UI_About;
     public override void InstallBindings()
     {
         Container.Bind<BonusService>().AsSingle();
@@ -34,6 +35,10 @@ public class BootstrapInstaller : MonoInstaller
         
         Container.Bind<UIGameOver>()
             .FromComponentInNewPrefab(UI_GameOver)
+            .AsSingle()
+            .Lazy();
+        Container.Bind<UIAbout>()
+            .FromComponentInNewPrefab(UI_About)
             .AsSingle()
             .Lazy();
     }

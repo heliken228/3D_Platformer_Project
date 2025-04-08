@@ -2,7 +2,8 @@ using UnityEngine;
 public enum CollectibleType
 {
     Coin, 
-    Gem
+    Gem,
+    Star
 }
 
 public class BonusHandler : MonoBehaviour
@@ -31,6 +32,10 @@ public class BonusHandler : MonoBehaviour
                 OnBonusTake?.Invoke(type);
             }
             else if (type == CollectibleType.Gem)
+            {
+                OnBonusTake?.Invoke(type);
+            }
+            else if (type == CollectibleType.Star)
             {
                 OnBonusTake?.Invoke(type);
             }

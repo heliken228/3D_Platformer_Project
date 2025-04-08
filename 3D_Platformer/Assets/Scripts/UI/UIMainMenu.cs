@@ -4,5 +4,8 @@ using UnityEngine.UI;
 public class UIMainMenu : MonoBehaviour
 {
     public Canvas MainMenuCanvas;
-    public Button MainMenuButton;
+    public Button MainMenuStartButton;
+    public Button MainMenuSettingsButton;
+    public Button MainMenuAboutButton;
+    public Button MainMenuExitButton;
 }

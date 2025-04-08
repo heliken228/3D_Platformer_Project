@@ -15,9 +15,16 @@ public class SceneService : MonoBehaviour
     private Button _startButton;
     
     private Canvas _mainMenuCanvas;
-    private Button _mainMenuButton;
+    private Button _mainMenuStartButton;
+    private Button _mainMenuSettingsButton;
+    private Button _mainMenuAboutButton;
+    private Button _mainMenuExitButton;
     
     private Canvas _pauseMenuCanvas;
+    private Button _pauseToMainMenuButton;
+    
+    private Canvas _aboutCanvas;
+    private Button _aboutButton;
     
     private AudioSource _backgroundMusic;
     
@@ -26,16 +33,24 @@ public class SceneService : MonoBehaviour
     private bool _bIsPaused = false;
 
     [Inject] 
-    public void Construction(UILoadingPanel loadingPanel, UIMainMenu mainMenu, UIPause pauseMenu, BackgroundMusic backgroundMusic)
+    public void Construction(UILoadingPanel loadingPanel, UIMainMenu mainMenu,
+        UIPause pauseMenu, BackgroundMusic backgroundMusic, UIAbout about)
     {
         _loadingCanvas = loadingPanel.CanvasPanel;
         _loadingText = loadingPanel.LoadingText;
         _startButton = loadingPanel.Button;
 
         _mainMenuCanvas = mainMenu.MainMenuCanvas;
-        _mainMenuButton = mainMenu.MainMenuButton;
+        _mainMenuStartButton = mainMenu.MainMenuStartButton;
+        _mainMenuSettingsButton = mainMenu.MainMenuSettingsButton;
+        _mainMenuAboutButton = mainMenu.MainMenuAboutButton;
+        _mainMenuExitButton = mainMenu.MainMenuExitButton;
 
         _pauseMenuCanvas = pauseMenu.PauseCanvas;
+        _pauseToMainMenuButton = pauseMenu.PauseToMainMenuButton;
+        
+        _aboutCanvas = about.AboutCanvas;
+        _aboutButton = about.AboutCloseButton;
 
         _backgroundMusic = backgroundMusic.BackgroundAudio.GetComponent<AudioSource>();
     }
@@ -48,8 +63,12 @@ public class SceneService : MonoBehaviour
         // Активируем главное меню только при первом запуске
         if (_isFirstLaunch)
         {
+            TogglePause();
+            _aboutCanvas.enabled = false;
             _mainMenuCanvas.enabled = true;
-            _mainMenuButton.onClick.AddListener(LoadFirstScene);
+            _mainMenuStartButton.onClick.AddListener(LoadFirstScene);
+            _mainMenuAboutButton.onClick.AddListener(ToggleAboutMenu);
+            _aboutButton.onClick.AddListener(ToggleAboutMenu);
             _isFirstLaunch = false;
         }
         else
@@ -60,11 +79,29 @@ public class SceneService : MonoBehaviour
         _loadingCanvas.enabled = false;
         _pauseMenuCanvas.enabled = false;
         _startButton.onClick.AddListener(OnStartButtonClicked);
+        _pauseToMainMenuButton.onClick.AddListener(ReturnToMainMenu);
     }
 
     private void LoadFirstScene()
     {
+        TogglePause();
         _mainMenuCanvas.enabled = false;
+    }
+
+    private void ToggleAboutMenu()
+    {
+        _aboutCanvas.enabled = !_aboutCanvas.enabled;
+    }
+    
+    private void ReturnToMainMenu()
+    {
+        SceneManager.LoadScene(0);
+        _pauseMenuCanvas.enabled = false;
+        _mainMenuCanvas.enabled = true;
+        _bIsPaused = false;
+        Time.timeScale = 1;
+        _backgroundMusic.enabled = true;
+        _isFirstLaunch = true;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -72,6 +109,7 @@ public class SceneService : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             LoadNextScene();
+            TogglePause(); //пауза включается
             _loadingCanvas.enabled = true;
         }
     }
@@ -82,6 +120,8 @@ public class SceneService : MonoBehaviour
         {
             TogglePause();
         } 
+        Debug.Log(_bIsPaused);
+        Debug.Log(Time.timeScale);
     }
 
     private void TogglePause()
@@ -140,6 +180,7 @@ public class SceneService : MonoBehaviour
         // Активируем сцену, когда игрок нажимает кнопку "Начать"
         _asyncLoad.allowSceneActivation = true;
         _startButton.gameObject.SetActive(false); // Скрываем кнопку после нажатия
-        
+        Time.timeScale = 1;
+        _bIsPaused = false;
     }
 }

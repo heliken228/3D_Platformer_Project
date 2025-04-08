@@ -7,6 +7,7 @@ public class DroneMovement : MonoBehaviour
     [SerializeField] private float _maxRotationAngle = 5.0f;
     [SerializeField] private float _verticalSpeed = 0.5f;
     [SerializeField] private float _verticalAmplitude = 0.5f;
+    [SerializeField] private AudioSource _droneAudioSource;
 
     private Vector3 _initialPosition;
     private Vector3 _initialRotation;
@@ -16,10 +17,22 @@ public class DroneMovement : MonoBehaviour
         // Сохраняем начальную позицию дрона
         _initialPosition = _drone.position;
         _initialRotation = _drone.eulerAngles;
+        
     }
 
     private void Update()
     {
+        if (Time.timeScale == 0)
+        {
+            if (_droneAudioSource.isPlaying) 
+                _droneAudioSource.Pause();
+        }
+        else
+        {
+            if (!_droneAudioSource.isPlaying)
+                _droneAudioSource.UnPause();
+        }
+
         float rotationX = _initialRotation.x + Mathf.Sin(Time.time * _rotationSpeed) * _maxRotationAngle;
         float rotationY = _initialRotation.y + Mathf.Sin(Time.time * _rotationSpeed) * _maxRotationAngle;
         float rotationZ = _initialRotation.z + Mathf.Sin(Time.time * _rotationSpeed) * _maxRotationAngle;

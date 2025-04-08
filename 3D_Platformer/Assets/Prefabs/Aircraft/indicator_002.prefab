@@ -110,6 +110,7 @@ MonoBehaviour:
   _maxRotationAngle: 5
   _verticalSpeed: 0.5
   _verticalAmplitude: 0.5
+  _droneAudioSource: {fileID: 2674857909557197484}
 --- !u!82 &2674857909557197484
 AudioSource:
   m_ObjectHideFlags: 0

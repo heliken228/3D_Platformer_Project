@@ -142,7 +142,6 @@ public class PlayerController : MonoBehaviour
     private void Die()
     {
         bool IsGameOver = BonusService.Instance.LoseHeart();
-        Debug.Log(IsGameOver);
         
         Respawn();
 

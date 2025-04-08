@@ -61,6 +61,10 @@ public class BonusService : MonoBehaviour
             UpdateGemText();
             _gemSound.Play();
         }
+        if (collectibleType == CollectibleType.Star)
+        {
+            _gemSound.Play();
+        }
         
     }
     private void UpdateCoinText()
