@@ -6,6 +6,8 @@ TagManager:
   tags:
   - UI
   - DeathZone
+  - ScreamZone
+  - Hammer
   layers:
   - Default
   - TransparentFX

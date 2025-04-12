@@ -1,4 +1,5 @@
 using System;
+using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
@@ -10,10 +11,13 @@ public class BonusService : MonoBehaviour
     [SerializeField] private AudioSource _coinSound;
     [SerializeField] private AudioSource _gemSound;
     [SerializeField] private GameObject[] _hearts;
+    [SerializeField] private Sprite _halfHeart;
+    [SerializeField] private Sprite _emptyHeart;
 
     private int _coinCount = 0;
     private int _gemCount = 0;
     private int _currentHeartIndex = 0;
+    private bool _hasHalfHeart = false;
     
     public static BonusService Instance;
     
@@ -78,18 +82,70 @@ public class BonusService : MonoBehaviour
     
     public bool LoseHeart()
     {
-        if (_currentHeartIndex < _hearts.Length)
+        if (_hasHalfHeart)
         {
+            // Если уже есть половинка сердца, превращаем ее в пустое
             Image heartImage = _hearts[_currentHeartIndex].GetComponent<Image>();
             if (heartImage != null)
             {
-                heartImage.color = Color.black;
+                heartImage.transform.DOPunchScale(Vector3.one * 1.3f, 0.3f, vibrato: 1, elasticity: 0.5f).OnComplete(() => 
+                {
+                    heartImage.sprite = _emptyHeart;
+                });
+            }
+            _hasHalfHeart = false;
+            _currentHeartIndex++;
+        }
+        else if (_currentHeartIndex < _hearts.Length)
+        {
+            // отнимаем сердце
+            Image heartImage = _hearts[_currentHeartIndex].GetComponent<Image>();
+            if (heartImage != null)
+            {
+                heartImage.transform.DOPunchScale(Vector3.one * 1.3f, 0.3f, vibrato: 1, elasticity: 0.5f).OnComplete(() => 
+                {
+                    heartImage.sprite = _emptyHeart;
+                });
             }
             _currentHeartIndex++;
-            
-            return _currentHeartIndex >= _hearts.Length;
         }
-        return true;
-        
+        return IsGameOver();
+    }
+    
+    public bool LoseHalfHeart()
+    {
+        if (_hasHalfHeart)
+        {
+            // Если уже есть половинка, превращаем ее в пустое
+            Image heartImage = _hearts[_currentHeartIndex].GetComponent<Image>();
+            if (heartImage != null)
+            {
+                heartImage.transform.DOPunchScale(Vector3.one * 1.3f, 0.3f, vibrato: 1, elasticity: 0.5f).OnComplete(() =>
+                {
+                    heartImage.sprite = _emptyHeart;;
+                });
+            }
+            _hasHalfHeart = false;
+            _currentHeartIndex++;
+        }
+        else if (_currentHeartIndex < _hearts.Length)
+        {
+            // Создаем половинку сердца
+            Image heartImage = _hearts[_currentHeartIndex].GetComponent<Image>();
+            if (heartImage != null)
+            {
+                heartImage.transform.DOPunchScale(Vector3.one * 1.3f, 0.3f, vibrato: 1, elasticity: 0.5f).OnComplete(() =>
+                    {
+                        heartImage.sprite = _halfHeart;
+                    });
+            }
+            _hasHalfHeart = true;
+        }
+        return IsGameOver();
+    }
+    
+    private bool IsGameOver()
+    {
+        return _currentHeartIndex >= _hearts.Length && !_hasHalfHeart;
     }
 }

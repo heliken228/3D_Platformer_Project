@@ -377,6 +377,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: obstacle_2_002
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: 0367d35424ac00145b587ab787e4fa5d, type: 3}
+      propertyPath: m_TagString
+      value: Hammer
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -384,6 +388,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0367d35424ac00145b587ab787e4fa5d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 549723286474997773}
+    - targetCorrespondingSourceObject: {fileID: 919132149155446097, guid: 0367d35424ac00145b587ab787e4fa5d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 4684990281931259314}
   m_SourcePrefab: {fileID: 100100000, guid: 0367d35424ac00145b587ab787e4fa5d, type: 3}
 --- !u!1 &118339128284381902 stripped
 GameObject:
@@ -411,6 +418,29 @@ CapsuleCollider:
   serializedVersion: 2
   m_Radius: 0.7835706
   m_Height: 5.8079658
+  m_Direction: 0
+  m_Center: {x: -0.01633501, y: 0.010846615, z: 0.000007633289}
+--- !u!136 &4684990281931259314
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 118339128284381902}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.99
+  m_Height: 6.58
   m_Direction: 0
   m_Center: {x: -0.01633501, y: 0.010846615, z: 0.000007633289}
 --- !u!4 &788055597275404404 stripped

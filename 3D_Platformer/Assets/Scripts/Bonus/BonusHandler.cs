@@ -26,6 +26,8 @@ public class BonusHandler : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
+            BonusCollectEffect.Instance.PlayCoinEffect(transform.position);
+            
             gameObject.SetActive(false);
             if (type == CollectibleType.Coin)
             {

@@ -7,8 +7,12 @@ public class BootstrapInstaller : MonoInstaller
     public GameObject UI_MainMenu;
     public GameObject UI_Pause;
     public GameObject BackgroundMusic;
+    public GameObject UIMusic;
+    public GameObject ButtonClickAudio;
+    public GameObject BonusCollectEffect;
     public GameObject UI_GameOver;
     public GameObject UI_About;
+    public GameObject UI_Settings;
     public override void InstallBindings()
     {
         Container.Bind<BonusService>().AsSingle();
@@ -33,12 +37,33 @@ public class BootstrapInstaller : MonoInstaller
             .AsSingle()
             .Lazy();
         
+        Container.Bind<UIMusic>()
+            .FromComponentInNewPrefab(UIMusic)
+            .AsSingle()
+            .Lazy();
+        
+        Container.Bind<ButtonClickAudio>()
+            .FromComponentInNewPrefab(ButtonClickAudio)
+            .AsSingle()
+            .Lazy();
+        
         Container.Bind<UIGameOver>()
             .FromComponentInNewPrefab(UI_GameOver)
             .AsSingle()
             .Lazy();
+        
         Container.Bind<UIAbout>()
             .FromComponentInNewPrefab(UI_About)
+            .AsSingle()
+            .Lazy();
+        
+        Container.Bind<UISettings>()
+            .FromComponentInNewPrefab(UI_Settings)
+            .AsSingle()
+            .Lazy();
+        
+        Container.Bind<BonusEffectProjectContext>()
+            .FromComponentInNewPrefab(BonusCollectEffect)
             .AsSingle()
             .Lazy();
     }

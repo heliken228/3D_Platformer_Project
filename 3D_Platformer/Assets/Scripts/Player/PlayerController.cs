@@ -18,6 +18,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] Camera _camera;
 
     [SerializeField] private AudioSource _jumpSound;
+    [SerializeField] private AudioSource _screamSound;
+    [SerializeField] private AudioSource _hitSound;
+    [SerializeField] private AudioSource _kickSound;
 
     private Canvas _gameOverCanvas;
     private Vector3 _startPosition;
@@ -137,15 +140,40 @@ public class PlayerController : MonoBehaviour
         {
             Die();
         }
+
+        if (other.CompareTag("ScreamZone"))
+        {
+            _screamSound.Play();
+            _animator.SetTrigger("Fall");
+        }
+
+        if (other.CompareTag("Hammer"))
+        {
+            _kickSound.Play();
+            _hitSound.Play();
+            Hit();
+        }
+    }
+
+    private void Hit()
+    {
+        _animator.SetTrigger("Hit");
+        
+        bool isGameOver = BonusService.Instance.LoseHalfHeart();
+
+        if (isGameOver)
+        {
+            _gameOverCanvas.enabled = true;
+        }
     }
 
     private void Die()
     {
-        bool IsGameOver = BonusService.Instance.LoseHeart();
+        bool IsDie = BonusService.Instance.LoseHeart();
         
         Respawn();
 
-        if (IsGameOver)
+        if (IsDie)
         {
             _gameOverCanvas.enabled = true;
         }

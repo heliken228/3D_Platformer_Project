@@ -78,5 +78,9 @@ MonoBehaviour:
   UI_MainMenu: {fileID: 689512938443362865, guid: 999d5afff29ad8b4d9b620f55ff888e7, type: 3}
   UI_Pause: {fileID: 1760672964828172447, guid: 91a442972736576428c775aed40ef0c4, type: 3}
   BackgroundMusic: {fileID: 6836002012226084088, guid: 3c24d17ecdaa9fe42b4c41004d3acfdf, type: 3}
+  UIMusic: {fileID: 7760183285750330027, guid: e93b94beec0dcf24e94c03773cda025d, type: 3}
+  ButtonClickAudio: {fileID: 7029805662307070605, guid: ed8111dce723d8c4383bf4c191e43d0a, type: 3}
+  BonusCollectEffect: {fileID: 2183341677780025108, guid: 279689e904814e44c80ba8fd40958f9e, type: 3}
   UI_GameOver: {fileID: 5478337915922533420, guid: 77e8d6b1f3ca9344ea7dd085d7e4fc83, type: 3}
   UI_About: {fileID: 1204869566132623400, guid: 725193c004a8a724782bd9898c9d2596, type: 3}
+  UI_Settings: {fileID: 8175950554034055702, guid: 251e115230e8d6d458c8b61d0715b66e, type: 3}

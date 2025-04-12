@@ -22,19 +22,28 @@ public class SceneService : MonoBehaviour
     
     private Canvas _pauseMenuCanvas;
     private Button _pauseToMainMenuButton;
+    private Button _pauseToSettingsButton;
+    private Button _pauseToContinueButton;
     
     private Canvas _aboutCanvas;
     private Button _aboutButton;
     
+    private Canvas _settingsCanvas;
+    private Button _settingsToPauseButton;
+    private Scrollbar _volumeScrollbar;
+    
     private AudioSource _backgroundMusic;
+    private AudioSource _uIMusic;
+    private AudioSource _buttonAudio;
     
     private AsyncOperation _asyncLoad;
     private int _currentSceneIndex = 0;
     private bool _bIsPaused = false;
 
     [Inject] 
-    public void Construction(UILoadingPanel loadingPanel, UIMainMenu mainMenu,
-        UIPause pauseMenu, BackgroundMusic backgroundMusic, UIAbout about)
+    public void Construction(UILoadingPanel loadingPanel, UIMainMenu mainMenu, 
+        UIPause pauseMenu, BackgroundMusic backgroundMusic, UIMusic uiMusic,
+        ButtonClickAudio buttonClickAudio, UIAbout about, UISettings settings)
     {
         _loadingCanvas = loadingPanel.CanvasPanel;
         _loadingText = loadingPanel.LoadingText;
@@ -48,23 +57,34 @@ public class SceneService : MonoBehaviour
 
         _pauseMenuCanvas = pauseMenu.PauseCanvas;
         _pauseToMainMenuButton = pauseMenu.PauseToMainMenuButton;
+        _pauseToSettingsButton = pauseMenu.PauseToSettings;
+        _pauseToContinueButton = pauseMenu.PauseToGame;
         
         _aboutCanvas = about.AboutCanvas;
         _aboutButton = about.AboutCloseButton;
-
+        
+        _settingsCanvas = settings.SettingsCanvas;
+        _settingsToPauseButton = settings.BackToPauseButton;
+        _volumeScrollbar = settings.VolumeScrollbar;
+        
         _backgroundMusic = backgroundMusic.BackgroundAudio.GetComponent<AudioSource>();
+        _uIMusic = uiMusic.UIMusicObject.GetComponent<AudioSource>();
+        _buttonAudio = buttonClickAudio.ButtonClickAudioObject.GetComponent<AudioSource>();
+        _volumeScrollbar.value = 1;
+        _volumeScrollbar.onValueChanged.AddListener(OnVolumeChanged);
     }
     
     private void Start()
     {
         _currentSceneIndex = SceneManager.GetActiveScene().buildIndex;   // Определяем индекс текущей сцены
-        Debug.Log("Индекс текущей сцены: " + _currentSceneIndex);
 
         // Активируем главное меню только при первом запуске
         if (_isFirstLaunch)
         {
             TogglePause();
+            _uIMusic.enabled = true;
             _aboutCanvas.enabled = false;
+            _settingsCanvas.enabled = false;
             _mainMenuCanvas.enabled = true;
             _mainMenuStartButton.onClick.AddListener(LoadFirstScene);
             _mainMenuAboutButton.onClick.AddListener(ToggleAboutMenu);
@@ -78,8 +98,22 @@ public class SceneService : MonoBehaviour
         
         _loadingCanvas.enabled = false;
         _pauseMenuCanvas.enabled = false;
+        _mainMenuSettingsButton.onClick.AddListener(ToggleSettingsMenu);
+        _settingsToPauseButton.onClick.AddListener(ToggleSettingsMenu);
+        _pauseToSettingsButton.onClick.AddListener(ToggleSettingsMenu);
         _startButton.onClick.AddListener(OnStartButtonClicked);
         _pauseToMainMenuButton.onClick.AddListener(ReturnToMainMenu);
+        _pauseToContinueButton.onClick.AddListener(TogglePause);
+        
+        _mainMenuStartButton.onClick.AddListener(PlayButtonAudio);
+        _mainMenuAboutButton.onClick.AddListener(PlayButtonAudio);
+        _aboutButton.onClick.AddListener(PlayButtonAudio);
+        _mainMenuSettingsButton.onClick.AddListener(PlayButtonAudio);
+        _settingsToPauseButton.onClick.AddListener(PlayButtonAudio);
+        _pauseToSettingsButton.onClick.AddListener(PlayButtonAudio);
+        _startButton.onClick.AddListener(PlayButtonAudio);
+        _pauseToMainMenuButton.onClick.AddListener(PlayButtonAudio);
+        _pauseToContinueButton.onClick.AddListener(PlayButtonAudio);
     }
 
     private void LoadFirstScene()
@@ -91,6 +125,21 @@ public class SceneService : MonoBehaviour
     private void ToggleAboutMenu()
     {
         _aboutCanvas.enabled = !_aboutCanvas.enabled;
+    }
+
+    private void ToggleSettingsMenu()
+    {
+        _settingsCanvas.enabled = !_settingsCanvas.enabled;
+    }
+    
+    private void PlayButtonAudio()
+    {
+        _buttonAudio.Play();
+    }
+    
+    private void OnVolumeChanged(float value)
+    {
+        AudioListener.volume = value;
     }
     
     private void ReturnToMainMenu()
@@ -119,13 +168,12 @@ public class SceneService : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             TogglePause();
-        } 
-        Debug.Log(_bIsPaused);
-        Debug.Log(Time.timeScale);
+        }
     }
 
     private void TogglePause()
     {
+        _uIMusic.enabled = !_uIMusic.enabled;
         _backgroundMusic.enabled = !_backgroundMusic.enabled;
         _pauseMenuCanvas.enabled = !_bIsPaused;
         _bIsPaused = !_bIsPaused;
@@ -137,7 +185,6 @@ public class SceneService : MonoBehaviour
     public void LoadNextScene()
     {
         int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
-        Debug.Log("Индекс загружаемой сцены: " + nextSceneIndex);
         
         _loadingCanvas.gameObject.SetActive(true); // Активируем Canvas с надписью "Loading"
         StartCoroutine(SceneLoad(nextSceneIndex));
@@ -182,5 +229,7 @@ public class SceneService : MonoBehaviour
         _startButton.gameObject.SetActive(false); // Скрываем кнопку после нажатия
         Time.timeScale = 1;
         _bIsPaused = false;
+        _backgroundMusic.enabled = true;
+        _uIMusic.enabled = false;
     }
 }
