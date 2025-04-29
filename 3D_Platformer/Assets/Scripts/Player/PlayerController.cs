@@ -15,12 +15,13 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _rotationSpeed;
     [SerializeField] private float _gravity = -9.81f;
     [SerializeField] private float _jumpHeight;
-    [SerializeField] Camera _camera;
 
     [SerializeField] private AudioSource _jumpSound;
     [SerializeField] private AudioSource _screamSound;
     [SerializeField] private AudioSource _hitSound;
     [SerializeField] private AudioSource _kickSound;
+    [SerializeField] private Transform _cameraTarget;
+    
 
     private Canvas _gameOverCanvas;
     private Vector3 _startPosition;
@@ -28,17 +29,20 @@ public class PlayerController : MonoBehaviour
     private Vector3 _velocity;
     private bool _isGrounded;
     private Animator _animator;
+    private Camera _camera;
 
     public Transform groundCheck;
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
+    public Transform CameraTarget => _cameraTarget;
     
     private RagdollController _ragdollController; 
     
     [Inject]
-    public void Construct(UIGameOver GameOverCanvas)
+    public void Construct(UIGameOver GameOverCanvas, Camera camera)
     {
         _gameOverCanvas = GameOverCanvas.GameOverCanvas;
+        _camera = camera;
     }
     
     private void Awake()

@@ -8,10 +8,9 @@ public enum CollectibleType
 
 public class BonusHandler : MonoBehaviour
 {
-    public static event OnColliderBonus OnBonusTake;
+    public static event OnColliderBonus OnBonusTake; //Событие, которое срабатывает, когда игрок подбирает бонус. 
     
-    public CollectibleType type;
-
+    public CollectibleType type; //Переменная, которая хранит тип бонуса для данного объекта
     public delegate void OnColliderBonus(CollectibleType type);
 
     [SerializeField] private float _rotationSpeed = 100f;
@@ -26,21 +25,24 @@ public class BonusHandler : MonoBehaviour
     {
         if (other.CompareTag("Player"))
         {
-            BonusCollectEffect.Instance.PlayCoinEffect(transform.position);
-            
-            gameObject.SetActive(false);
             if (type == CollectibleType.Coin)
             {
-                OnBonusTake?.Invoke(type);
+                BonusCollectEffect.Instance.PlayBonusEffect(BonusType.Coin, transform.position); //вызов анимации эффектов
             }
             else if (type == CollectibleType.Gem)
             {
-                OnBonusTake?.Invoke(type);
+                BonusCollectEffect.Instance.PlayBonusEffect(BonusType.Gem, transform.position);
             }
             else if (type == CollectibleType.Star)
             {
-                OnBonusTake?.Invoke(type);
+                BonusCollectEffect.Instance.PlayBonusEffect(BonusType.Star, transform.position);
             }
+
+            // Отключаем объект после подбора
+            gameObject.SetActive(false);
+
+            // Сигнализируем о сборе бонуса
+            OnBonusTake?.Invoke(type);
         }
     }
 }

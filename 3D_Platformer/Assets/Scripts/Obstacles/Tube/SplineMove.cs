@@ -17,13 +17,15 @@ public class SplineMove : MonoBehaviour
     
     private PlayerController _playerController;
     private Animator _playerAnimator;
+    private SplineCamera _splineCamera;
     
     [Inject]
-    public void Construct(PlayerController playerController)
+    public void Construct(PlayerController playerController, SplineCamera splineCamera)
     {
         _playerController = playerController;
         _playerAnimator = playerController.GetComponentInChildren<Animator>();
         _initialScale = playerController.transform.localScale;
+        _splineCamera = splineCamera;
     }
 
     private void Start()
@@ -33,7 +35,7 @@ public class SplineMove : MonoBehaviour
 
     private void Update()
     {
-        if (_isMoving && _playerController != null)
+        if (_isMoving && _playerController)
         {
             _distancePercent += _speed * Time.deltaTime / _splineLength;
             _distancePercent = Mathf.Clamp01(_distancePercent);
@@ -46,15 +48,14 @@ public class SplineMove : MonoBehaviour
                 _isMoving = false;
                 _playerAnimator.SetBool("Fall", false);
                 _playerController.transform.localScale = _initialScale;
+                
+                //_playerController.gameObject.SetActive(true);
+                _playerController.enabled = true;
             }
             else
             {
                 _playerAnimator.SetBool("Fall", true);
             }
-
-            /*Vector3 newPosition = _splineContainer.EvaluatePosition(_distancePercent + 0.05f);
-            Vector3 direction = newPosition - currentPosition;
-            _playerController.transform.rotation = Quaternion.LookRotation(direction, _playerController.transform.up);*/
         }
     }
 
@@ -63,7 +64,14 @@ public class SplineMove : MonoBehaviour
         if (other.CompareTag("Player"))
         {
             _isMoving = true;
+            _distancePercent = 0f;
             _playerController.transform.localScale = _playerScaleInTube;
+            
+            _playerController.enabled = false;
+            //_playerController.gameObject.SetActive(false);
+        
+            _splineCamera.SetSpline(_splineContainer);
+            _splineCamera.SwitchToSplineCamera();
         }
     }
 

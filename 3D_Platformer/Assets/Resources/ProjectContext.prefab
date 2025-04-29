@@ -84,3 +84,4 @@ MonoBehaviour:
   UI_GameOver: {fileID: 5478337915922533420, guid: 77e8d6b1f3ca9344ea7dd085d7e4fc83, type: 3}
   UI_About: {fileID: 1204869566132623400, guid: 725193c004a8a724782bd9898c9d2596, type: 3}
   UI_Settings: {fileID: 8175950554034055702, guid: 251e115230e8d6d458c8b61d0715b66e, type: 3}
+  MainCamera: {fileID: 127616460807714312, guid: 3f1e6dfd04ee5274fa15acc26cd592be, type: 3}

@@ -92,6 +92,7 @@ MonoBehaviour:
   _screamSound: {fileID: 1288706126558459438}
   _hitSound: {fileID: 5890882679703347032}
   _kickSound: {fileID: 2293507692326924040}
+  _cameraTarget: {fileID: 265861132652001859}
   groundCheck: {fileID: 2421919740839156486}
   groundDistance: 0.4
   groundMask:
@@ -2719,7 +2720,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5924713650674906416
 Transform:
   m_ObjectHideFlags: 0
@@ -2728,8 +2729,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4242599430769363174}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.06893895, y: -0.3046548, z: 0.022114797, w: 0.9497072}
-  m_LocalPosition: {x: 1.9891458, y: 2.1520634, z: -2.7813568}
+  m_LocalRotation: {x: 0.045173597, y: -0.5243319, z: -0.09218428, w: 0.84530324}
+  m_LocalPosition: {x: -2.98, y: 1.474, z: 99.590004}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3700,7 +3701,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &478516324685101740
 Transform:
   m_ObjectHideFlags: 0

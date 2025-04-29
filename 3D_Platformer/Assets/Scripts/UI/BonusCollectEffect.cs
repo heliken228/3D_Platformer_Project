@@ -1,9 +1,16 @@
+using System.Collections.Generic;
 using DG.Tweening;
 using UnityEngine;
 using UnityEngine.UI;
 using Zenject;
 using Random = UnityEngine.Random;
 
+public enum BonusType
+{
+    Coin,
+    Gem,
+    Star
+}
 public class BonusCollectEffect : MonoBehaviour
 {
     public static BonusCollectEffect Instance { get; private set; }
@@ -14,25 +21,38 @@ public class BonusCollectEffect : MonoBehaviour
     [SerializeField] private float _scaleEndValue = 0.5f;
 
     private Transform _bonusEffectCanvas;
-    private Image _coinImage;
-    private Transform _coinTarget;
-    private GameObject[] _coinPool;
+    
+    private Dictionary<BonusType, Sprite> _bonusSprites; //Словарь, хранящий спрайты для каждого типа бонуса
+    private Dictionary<BonusType, Transform> _bonusTargets; //Словарь, хранящий цели для каждого типа бонуса
+    private Dictionary<BonusType, GameObject[]> _bonusPools; //Словарь, содержащий пулы объектов для каждого типа бонуса
 
     [Inject]
-
     public void Construction(BonusEffectProjectContext bonusEffectProjectContext)
     {
         _bonusEffectCanvas = bonusEffectProjectContext.BonusEffectCanvas;
-        _coinImage = bonusEffectProjectContext.CoinImage;
-        _coinTarget = bonusEffectProjectContext.CoinTarget;
-        
-        InitializePool();
+
+        _bonusSprites = new Dictionary<BonusType, Sprite>
+        {
+            { BonusType.Coin, bonusEffectProjectContext.CoinImage.sprite },
+            { BonusType.Gem, bonusEffectProjectContext.GemImage.sprite },
+            { BonusType.Star, bonusEffectProjectContext.StarImage.sprite }
+        };
+
+        _bonusTargets = new Dictionary<BonusType, Transform>
+        {
+            { BonusType.Coin, bonusEffectProjectContext.CoinTarget },
+            { BonusType.Gem, bonusEffectProjectContext.GemTarget },
+            { BonusType.Star, bonusEffectProjectContext.StarTarget }
+        };
+
+        InitializePools(bonusEffectProjectContext);
     }
+
     private void Awake()
     {
         if (Instance == null)
         {
-            Instance = this; // Делаем этот объект доступным из других скриптов
+            Instance = this;
             DontDestroyOnLoad(gameObject);
         }
         else
@@ -41,66 +61,75 @@ public class BonusCollectEffect : MonoBehaviour
         }
     }
 
-    private void InitializePool()
+    private void InitializePools(BonusEffectProjectContext context)
     {
-        _coinPool = new GameObject[_poolSize];
-        for (int i = 0; i < _poolSize; i++)
+        _bonusPools = new Dictionary<BonusType, GameObject[]>();
+
+        foreach (BonusType bonusType in System.Enum.GetValues(typeof(BonusType)))
         {
-            GameObject coinObj = new GameObject($"Coin_{i}");
-            coinObj.transform.SetParent(_bonusEffectCanvas);
-            
-            Image img = coinObj.AddComponent<Image>();
-            img.sprite = _coinImage.sprite;
-            img.rectTransform.sizeDelta = _coinImage.rectTransform.sizeDelta;
-            img.raycastTarget = false;
-            
-            coinObj.SetActive(false);
-            _coinPool[i] = coinObj;
+            GameObject[] pool = new GameObject[_poolSize];
+            for (int i = 0; i < _poolSize; i++)
+            {
+                GameObject bonusObj = new GameObject($"{bonusType}_{i}");
+                bonusObj.transform.SetParent(_bonusEffectCanvas);
+
+                Image img = bonusObj.AddComponent<Image>();
+                img.sprite = _bonusSprites[bonusType];
+
+                // Настроим размер под каждый бонус, если нужно
+                if (bonusType == BonusType.Coin)
+                    img.rectTransform.sizeDelta = context.CoinImage.rectTransform.sizeDelta;
+                else if (bonusType == BonusType.Gem)
+                    img.rectTransform.sizeDelta = context.GemImage.rectTransform.sizeDelta;
+                else if (bonusType == BonusType.Star)
+                    img.rectTransform.sizeDelta = context.StarImage.rectTransform.sizeDelta;
+
+                img.raycastTarget = false;
+                bonusObj.SetActive(false);
+                pool[i] = bonusObj;
+            }
+            _bonusPools[bonusType] = pool;
         }
     }
 
-    public void PlayCoinEffect(Vector3 worldPosition)
+    public void PlayBonusEffect(BonusType bonusType, Vector3 worldPosition)
     {
-        GameObject coin = GetPooledObject();
-        if (coin == null) return;
+        GameObject bonus = GetPooledObject(bonusType);
+        if (bonus == null) return;
 
-        RectTransform coinRect = coin.GetComponent<RectTransform>();
+        RectTransform bonusRect = bonus.GetComponent<RectTransform>();
         Vector2 screenPosition = Camera.main.WorldToScreenPoint(worldPosition);
 
-        coinRect.position = screenPosition;
-        coinRect.localScale = Vector3.one;
-        coin.SetActive(true);
+        bonusRect.position = screenPosition;
+        bonusRect.localScale = Vector3.one;
+        bonus.SetActive(true);
 
         Sequence sequence = DOTween.Sequence();
-        
-        // 1. Небольшой "прыжок" в случайном направлении
-        sequence.Append(coinRect.DOAnchorPos(
+
+        sequence.Append(bonusRect.DOAnchorPos(
             new Vector2(
-                Random.Range(-_spread, _spread), 
+                Random.Range(-_spread, _spread),
                 Random.Range(-_spread, _spread)
-            ), 
+            ),
             _animationDuration * 0.3f
         ).SetRelative(true));
-        
-        // 2. Перелет к цели
-        sequence.Append(coinRect.DOMove(_coinTarget.position, _animationDuration * 0.7f));
-        
-        // 3. Уменьшение размера во время перелета
-        sequence.Join(coinRect.DOScale(_scaleEndValue, _animationDuration * 0.7f));
-        
+
+        sequence.Append(bonusRect.DOMove(_bonusTargets[bonusType].position, _animationDuration * 0.7f));
+        sequence.Join(bonusRect.DOScale(_scaleEndValue, _animationDuration * 0.7f));
+
         sequence.OnComplete(() => {
-            coin.SetActive(false);
+            bonus.SetActive(false);
         });
     }
 
-    private GameObject GetPooledObject() //Получение монетки из пула
+    private GameObject GetPooledObject(BonusType bonusType)
     {
-        foreach (var coin in _coinPool)
+        foreach (var bonus in _bonusPools[bonusType])
         {
-            if (!coin.activeInHierarchy)
-                return coin;
+            if (!bonus.activeInHierarchy)
+                return bonus;
         }
-        Debug.LogWarning("Coin pool is empty! Consider increasing pool size.");
+        Debug.LogWarning($"{bonusType} pool is empty! Consider increasing pool size.");
         return null;
     }
 }

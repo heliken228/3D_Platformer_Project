@@ -9,4 +9,5 @@ public class BonusEffectProjectContext : MonoBehaviour
     public Image StarImage;
     public Transform CoinTarget;
     public Transform GemTarget;
+    public Transform StarTarget;
 }

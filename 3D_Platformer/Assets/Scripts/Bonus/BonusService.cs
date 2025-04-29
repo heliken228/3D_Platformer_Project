@@ -8,6 +8,7 @@ public class BonusService : MonoBehaviour
 {
     [SerializeField] private TextMeshProUGUI _coinText;
     [SerializeField] private TextMeshProUGUI _gemText;
+    [SerializeField] private TextMeshProUGUI _starText;
     [SerializeField] private AudioSource _coinSound;
     [SerializeField] private AudioSource _gemSound;
     [SerializeField] private GameObject[] _hearts;
@@ -16,6 +17,7 @@ public class BonusService : MonoBehaviour
 
     private int _coinCount = 0;
     private int _gemCount = 0;
+    private int _starCount = 0;
     private int _currentHeartIndex = 0;
     private bool _hasHalfHeart = false;
     
@@ -48,6 +50,7 @@ public class BonusService : MonoBehaviour
     {
         UpdateCoinText();
         UpdateGemText();
+        UpdateStarText();
     }
 
     public void HandleCollider(CollectibleType collectibleType)
@@ -67,6 +70,8 @@ public class BonusService : MonoBehaviour
         }
         if (collectibleType == CollectibleType.Star)
         {
+            _starCount++;
+            UpdateStarText();
             _gemSound.Play();
         }
         
@@ -78,6 +83,11 @@ public class BonusService : MonoBehaviour
     private void UpdateGemText()
     {
         _gemText.text = _gemCount.ToString();
+    }
+    
+    private void UpdateStarText()
+    {
+        _starText.text = _starCount.ToString();
     }
     
     public bool LoseHeart()
