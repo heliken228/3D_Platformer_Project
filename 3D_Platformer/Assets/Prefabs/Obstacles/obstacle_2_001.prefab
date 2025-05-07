@@ -110,6 +110,8 @@ MonoBehaviour:
   _rotationAngle: 60
   _loopRotate: 0
   _invertLoopRotate: 0
+  _audioOn: 1
+  _vzmahAudio: {fileID: 0}
 --- !u!65 &8920512485718322635
 BoxCollider:
   m_ObjectHideFlags: 0

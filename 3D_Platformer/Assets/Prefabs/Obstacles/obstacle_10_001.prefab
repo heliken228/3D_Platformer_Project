@@ -11,6 +11,7 @@ GameObject:
   - component: {fileID: -8679921383154817045}
   - component: {fileID: -3887185075125053422}
   - component: {fileID: -5009651495631478696}
+  - component: {fileID: 7986416701115014752}
   m_Layer: 0
   m_Name: obstacle_10_001
   m_TagString: Untagged
@@ -83,7 +84,8 @@ SkinnedMeshRenderer:
   m_SkinnedMotionVectors: 1
   m_Mesh: {fileID: 2107282539759254627, guid: 67442dca07bf5974c92537c96d6991da, type: 3}
   m_Bones: []
-  m_BlendShapeWeights: []
+  m_BlendShapeWeights:
+  - 0
   m_RootBone: {fileID: 0}
   m_AABB:
     m_Center: {x: 0, y: 1, z: 0}
@@ -110,4 +112,19 @@ MeshCollider:
   serializedVersion: 5
   m_Convex: 1
   m_CookingOptions: 30
-  m_Mesh: {fileID: 0}
+  m_Mesh: {fileID: 2107282539759254627, guid: 67442dca07bf5974c92537c96d6991da, type: 3}
+--- !u!114 &7986416701115014752
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132149155446097}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 1e5c7319bcd36be4b99a3e74b1bd0150, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  _skinnedMeshRenderer: {fileID: -3887185075125053422}
+  _blendShapeIndex: 0
+  _animationDuration: 0.5

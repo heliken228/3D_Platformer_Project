@@ -22,27 +22,27 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioSource _kickSound;
     [SerializeField] private Transform _cameraTarget;
     
-
-    private Canvas _gameOverCanvas;
+    private SceneService _sceneService;
     private Vector3 _startPosition;
     private Rigidbody _rigidbody;
     private Vector3 _velocity;
     private bool _isGrounded;
     private Animator _animator;
     private Camera _camera;
+    private bool _isRagdollActive = false;
 
     public Transform groundCheck;
     public float groundDistance = 0.4f;
     public LayerMask groundMask;
     public Transform CameraTarget => _cameraTarget;
     
-    private RagdollController _ragdollController; 
+    private RagdollController _ragdollController;
     
     [Inject]
-    public void Construct(UIGameOver GameOverCanvas, Camera camera)
+    public void Construct(Camera camera, SceneService sceneService)
     {
-        _gameOverCanvas = GameOverCanvas.GameOverCanvas;
         _camera = camera;
+        _sceneService = sceneService;
     }
     
     private void Awake()
@@ -52,7 +52,6 @@ public class PlayerController : MonoBehaviour
         _inputSystem = new InputSystem_Actions();
         _ragdollController = GetComponentInChildren<RagdollController>();
         _startPosition = transform.position;
-        _gameOverCanvas.enabled = false;
     }
 
     private void OnEnable()
@@ -157,6 +156,41 @@ public class PlayerController : MonoBehaviour
             _hitSound.Play();
             Hit();
         }
+
+        if (other.CompareTag("Glove") && !_isRagdollActive)
+        {
+            GloveKick gloveKick = other.GetComponentInParent<GloveKick>();
+            
+            if (gloveKick != null)
+            {
+                Vector3 kickDirection = gloveKick.GloveKickDirection;
+
+                _kickSound.Play();
+                _hitSound.Play();
+                _animator.SetTrigger("Fall");
+                _rigidbody.AddForce(kickDirection * 5000f, ForceMode.Impulse);
+            }
+            else
+            {
+                Debug.LogWarning("GloveKick не найден в родителях объекта с тегом 'Glove'");
+            }
+            
+            
+            
+            /*if (_ragdollController != null)
+            {
+                _ragdollController.SetRagdoll(true);
+                _inputSystem.Disable();
+                _isRagdollActive = true;
+                StartCoroutine(RespawnAfterDelay(2f));
+            }*/
+            
+        }
+    }
+    private IEnumerator RespawnAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        Respawn();
     }
 
     private void Hit()
@@ -167,7 +201,7 @@ public class PlayerController : MonoBehaviour
 
         if (isGameOver)
         {
-            _gameOverCanvas.enabled = true;
+            _sceneService.ShowGameOver();
         }
     }
 
@@ -179,12 +213,15 @@ public class PlayerController : MonoBehaviour
 
         if (IsDie)
         {
-            _gameOverCanvas.enabled = true;
+            _sceneService.ShowGameOver();
         }
     }
 
     private void Respawn()
     {
+        _ragdollController.SetRagdoll(false);
+        _isRagdollActive = false;
+        _inputSystem.Enable();
         transform.position = _startPosition;
         _rigidbody.linearVelocity = Vector3.zero;
         _rigidbody.angularVelocity = Vector3.zero;

@@ -56,7 +56,7 @@ public class RagdollController : MonoBehaviour
         SetRagdoll(_isRagdollActive);
     }
 
-    private void SetRagdoll(bool active)
+    public void SetRagdoll(bool active)
     {
         _animator.enabled = !active;
 

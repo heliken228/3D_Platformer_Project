@@ -8,6 +8,7 @@ TagManager:
   - DeathZone
   - ScreamZone
   - Hammer
+  - Glove
   layers:
   - Default
   - TransparentFX

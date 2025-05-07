@@ -32,6 +32,9 @@ public class SceneService : MonoBehaviour
     private Button _settingsToPauseButton;
     private Scrollbar _volumeScrollbar;
     
+    private Canvas _gameOverCanvas;
+    private Button _gameOverMainMenuButton;
+    
     private AudioSource _backgroundMusic;
     private AudioSource _uIMusic;
     private AudioSource _buttonAudio;
@@ -43,7 +46,7 @@ public class SceneService : MonoBehaviour
     [Inject] 
     public void Construction(UILoadingPanel loadingPanel, UIMainMenu mainMenu, 
         UIPause pauseMenu, BackgroundMusic backgroundMusic, UIMusic uiMusic,
-        ButtonClickAudio buttonClickAudio, UIAbout about, UISettings settings)
+        ButtonClickAudio buttonClickAudio, UIAbout about, UISettings settings, UIGameOver gameOver)
     {
         _loadingCanvas = loadingPanel.CanvasPanel;
         _loadingText = loadingPanel.LoadingText;
@@ -67,6 +70,9 @@ public class SceneService : MonoBehaviour
         _settingsToPauseButton = settings.BackToPauseButton;
         _volumeScrollbar = settings.VolumeScrollbar;
         
+        _gameOverCanvas = gameOver.GameOverCanvas;
+        _gameOverMainMenuButton = gameOver.GameOverBackToMainMenu;
+        
         _backgroundMusic = backgroundMusic.BackgroundAudio.GetComponent<AudioSource>();
         _uIMusic = uiMusic.UIMusicObject.GetComponent<AudioSource>();
         _buttonAudio = buttonClickAudio.ButtonClickAudioObject.GetComponent<AudioSource>();
@@ -76,8 +82,9 @@ public class SceneService : MonoBehaviour
     
     private void Start()
     {
+        Debug.Log("1" + _isFirstLaunch);
         _currentSceneIndex = SceneManager.GetActiveScene().buildIndex;   // Определяем индекс текущей сцены
-
+        
         // Активируем главное меню только при первом запуске
         if (_isFirstLaunch)
         {
@@ -85,6 +92,7 @@ public class SceneService : MonoBehaviour
             _uIMusic.enabled = true;
             _aboutCanvas.enabled = false;
             _settingsCanvas.enabled = false;
+            _gameOverCanvas.enabled = false;
             _mainMenuCanvas.enabled = true;
             _mainMenuStartButton.onClick.AddListener(LoadFirstScene);
             _mainMenuAboutButton.onClick.AddListener(ToggleAboutMenu);
@@ -95,7 +103,7 @@ public class SceneService : MonoBehaviour
         {
             _mainMenuCanvas.enabled = false;
         }
-        
+
         _loadingCanvas.enabled = false;
         _pauseMenuCanvas.enabled = false;
         _mainMenuSettingsButton.onClick.AddListener(ToggleSettingsMenu);
@@ -142,8 +150,19 @@ public class SceneService : MonoBehaviour
         AudioListener.volume = value;
     }
     
+    public void ShowGameOver()
+    {
+        _gameOverCanvas.enabled = true;
+        TogglePause(); // Паузим игру
+    }
+    
     private void ReturnToMainMenu()
     {
+        if (BonusService.Instance != null)
+        {
+            BonusService.Instance.ResetBonusState();
+        }
+        
         SceneManager.LoadScene(0);
         _pauseMenuCanvas.enabled = false;
         _mainMenuCanvas.enabled = true;

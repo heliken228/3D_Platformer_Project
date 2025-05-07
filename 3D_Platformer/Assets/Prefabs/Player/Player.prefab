@@ -42,6 +42,7 @@ Transform:
   - {fileID: 478516324685101740}
   - {fileID: 5924713650674906416}
   - {fileID: 265861132652001859}
+  - {fileID: 2317734670754535200}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!54 &2439990879189678851
@@ -87,7 +88,6 @@ MonoBehaviour:
   _rotationSpeed: 10
   _gravity: -9.81
   _jumpHeight: 1
-  _camera: {fileID: 5705507165514437302}
   _jumpSound: {fileID: 3018771165251807666}
   _screamSound: {fileID: 1288706126558459438}
   _hitSound: {fileID: 5890882679703347032}
@@ -2109,6 +2109,51 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 687ced103d93fe842beb7559b330847a, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &3615851232117812957
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2317734670754535200}
+  - component: {fileID: 2843407733616048860}
+  m_Layer: 0
+  m_Name: SplineMovePivot
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2317734670754535200
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3615851232117812957}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0, y: 0.988, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 9044876166197986142}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2843407733616048860
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3615851232117812957}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9d379a02f8076534b9d46e8030f07ca3, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  SplineMovePivot: {fileID: 2317734670754535200}
 --- !u!1 &3789786441912677923
 GameObject:
   m_ObjectHideFlags: 0

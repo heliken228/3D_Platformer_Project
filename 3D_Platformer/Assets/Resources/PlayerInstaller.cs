@@ -8,6 +8,7 @@ public class PlayerInstaller : MonoInstaller
     public GameObject PlayerPrefab;
     public Camera MainCamera;
     public SplineCamera SplineCamera;
+    public GloveKick GloveKick;
 
     public override void InstallBindings()
     {

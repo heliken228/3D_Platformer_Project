@@ -14,6 +14,7 @@ public class BonusService : MonoBehaviour
     [SerializeField] private GameObject[] _hearts;
     [SerializeField] private Sprite _halfHeart;
     [SerializeField] private Sprite _emptyHeart;
+    [SerializeField] private Sprite _fullHeart;
 
     private int _coinCount = 0;
     private int _gemCount = 0;
@@ -157,5 +158,27 @@ public class BonusService : MonoBehaviour
     private bool IsGameOver()
     {
         return _currentHeartIndex >= _hearts.Length && !_hasHalfHeart;
+    }
+
+    public void ResetBonusState()
+    {
+        _coinCount = 0;
+        _gemCount = 0;
+        _starCount = 0;
+        UpdateCoinText();
+        UpdateGemText();
+        UpdateStarText();
+
+        _currentHeartIndex = 0;
+        _hasHalfHeart = false;
+
+        for (int i = 0; i < _hearts.Length; i++)
+        {
+            Image heartImage = _hearts[i].GetComponent<Image>();
+            if (heartImage != null)
+            {
+                heartImage.sprite = _fullHeart;
+            }
+        }
     }
 }

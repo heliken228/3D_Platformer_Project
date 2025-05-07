@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.Rendering;
 using Zenject;
 
 public class BootstrapInstaller : MonoInstaller
@@ -13,9 +14,14 @@ public class BootstrapInstaller : MonoInstaller
     public GameObject UI_GameOver;
     public GameObject UI_About;
     public GameObject UI_Settings;
+    public SceneService SceneService;
     public override void InstallBindings()
     {
         Container.Bind<BonusService>().AsSingle();
+        
+        Container.Bind<SceneService>()
+            .FromComponentInNewPrefab(SceneService)
+            .AsSingle();
 
         Container.Bind<UILoadingPanel>()
             .FromComponentInNewPrefab(UI_LoadScene)
