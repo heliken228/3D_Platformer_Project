@@ -21,6 +21,8 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private AudioSource _hitSound;
     [SerializeField] private AudioSource _kickSound;
     [SerializeField] private Transform _cameraTarget;
+    [SerializeField] private float _boostSpeed;
+    [SerializeField] private float _animationSpeedMultiplier = 1.5f;
     
     private SceneService _sceneService;
     private Vector3 _startPosition;
@@ -110,7 +112,10 @@ public class PlayerController : MonoBehaviour
         // Вычисляем направление движения относительно камеры
         Vector3 desiredMoveDirection = forward * moveDirection.y + right * moveDirection.x;
 
-        Vector3 targetVelocity = desiredMoveDirection * _speed;
+        // Определяем текущую скорость
+        float currentSpeed = _inputSystem.Player.Sprint.IsPressed() ? _boostSpeed : _speed;
+
+        Vector3 targetVelocity = desiredMoveDirection * currentSpeed;
         _rigidbody.linearVelocity = new Vector3(targetVelocity.x, _rigidbody.linearVelocity.y, targetVelocity.z);
 
         if (desiredMoveDirection.magnitude > 0.1f)
@@ -118,7 +123,20 @@ public class PlayerController : MonoBehaviour
             Quaternion targetRotation = Quaternion.LookRotation(desiredMoveDirection);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, _rotationSpeed * Time.deltaTime);
         }
+
+        // Устанавливаем параметры анимации
         _animator.SetBool("Run", moveDirection.magnitude > 0.1f);
+        _animator.SetBool("IsBoosting", _inputSystem.Player.Sprint.IsPressed());
+
+        // Увеличиваем скорость анимации при ускорении
+        if (_inputSystem.Player.Sprint.IsPressed())
+        {
+            _animator.speed = _animationSpeedMultiplier;
+        }
+        else
+        {
+            _animator.speed = 1.0f;
+        }
     }
 
     public void Jump(InputAction.CallbackContext context)

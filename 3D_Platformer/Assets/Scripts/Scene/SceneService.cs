@@ -34,6 +34,7 @@ public class SceneService : MonoBehaviour
     
     private Canvas _gameOverCanvas;
     private Button _gameOverMainMenuButton;
+    private Button _gameOverRestartButton;
     
     private AudioSource _backgroundMusic;
     private AudioSource _uIMusic;
@@ -72,6 +73,7 @@ public class SceneService : MonoBehaviour
         
         _gameOverCanvas = gameOver.GameOverCanvas;
         _gameOverMainMenuButton = gameOver.GameOverBackToMainMenu;
+        _gameOverRestartButton = gameOver.GameOverRestartGame;
         
         _backgroundMusic = backgroundMusic.BackgroundAudio.GetComponent<AudioSource>();
         _uIMusic = uiMusic.UIMusicObject.GetComponent<AudioSource>();
@@ -82,8 +84,46 @@ public class SceneService : MonoBehaviour
     
     private void Start()
     {
-        Debug.Log("1" + _isFirstLaunch);
         _currentSceneIndex = SceneManager.GetActiveScene().buildIndex;   // Определяем индекс текущей сцены
+        
+        _mainMenuStartButton.onClick.RemoveAllListeners();
+        _mainMenuAboutButton.onClick.RemoveAllListeners();
+        _aboutButton.onClick.RemoveAllListeners();
+        _mainMenuSettingsButton.onClick.RemoveAllListeners();
+        _settingsToPauseButton.onClick.RemoveAllListeners();
+        _pauseToSettingsButton.onClick.RemoveAllListeners();
+        _startButton.onClick.RemoveAllListeners();
+        _pauseToMainMenuButton.onClick.RemoveAllListeners();
+        _pauseToContinueButton.onClick.RemoveAllListeners();
+        _gameOverMainMenuButton.onClick.RemoveAllListeners();
+        _gameOverRestartButton.onClick.RemoveAllListeners();
+            
+
+        // Добавляем обработчики событий
+        _mainMenuStartButton.onClick.AddListener(LoadFirstScene);
+        _mainMenuAboutButton.onClick.AddListener(ToggleAboutMenu);
+        _aboutButton.onClick.AddListener(ToggleAboutMenu);
+        _mainMenuSettingsButton.onClick.AddListener(ToggleSettingsMenu);
+        _settingsToPauseButton.onClick.AddListener(ToggleSettingsMenu);
+        _pauseToSettingsButton.onClick.AddListener(ToggleSettingsMenu);
+        _startButton.onClick.AddListener(OnStartButtonClicked);
+        _pauseToMainMenuButton.onClick.AddListener(ReturnToMainMenu);
+        _pauseToContinueButton.onClick.AddListener(TogglePauseUI);
+        _gameOverMainMenuButton.onClick.AddListener(ReturnToMainMenu);
+        _gameOverRestartButton.onClick.AddListener(RestartGame);
+
+        // Добавляем обработчики для воспроизведения звука кнопки
+        _mainMenuStartButton.onClick.AddListener(PlayButtonAudio);
+        _mainMenuAboutButton.onClick.AddListener(PlayButtonAudio);
+        _aboutButton.onClick.AddListener(PlayButtonAudio);
+        _mainMenuSettingsButton.onClick.AddListener(PlayButtonAudio);
+        _settingsToPauseButton.onClick.AddListener(PlayButtonAudio);
+        _pauseToSettingsButton.onClick.AddListener(PlayButtonAudio);
+        _startButton.onClick.AddListener(PlayButtonAudio);
+        _pauseToMainMenuButton.onClick.AddListener(PlayButtonAudio);
+        _pauseToContinueButton.onClick.AddListener(PlayButtonAudio);
+        _gameOverMainMenuButton.onClick.AddListener(PlayButtonAudio);
+        _gameOverRestartButton.onClick.AddListener(PlayButtonAudio);
         
         // Активируем главное меню только при первом запуске
         if (_isFirstLaunch)
@@ -94,40 +134,37 @@ public class SceneService : MonoBehaviour
             _settingsCanvas.enabled = false;
             _gameOverCanvas.enabled = false;
             _mainMenuCanvas.enabled = true;
-            _mainMenuStartButton.onClick.AddListener(LoadFirstScene);
-            _mainMenuAboutButton.onClick.AddListener(ToggleAboutMenu);
-            _aboutButton.onClick.AddListener(ToggleAboutMenu);
-            _isFirstLaunch = false;
         }
-        else
-        {
-            _mainMenuCanvas.enabled = false;
-        }
-
+        
+        _isFirstLaunch = false;
         _loadingCanvas.enabled = false;
         _pauseMenuCanvas.enabled = false;
-        _mainMenuSettingsButton.onClick.AddListener(ToggleSettingsMenu);
-        _settingsToPauseButton.onClick.AddListener(ToggleSettingsMenu);
-        _pauseToSettingsButton.onClick.AddListener(ToggleSettingsMenu);
-        _startButton.onClick.AddListener(OnStartButtonClicked);
-        _pauseToMainMenuButton.onClick.AddListener(ReturnToMainMenu);
-        _pauseToContinueButton.onClick.AddListener(TogglePause);
-        
-        _mainMenuStartButton.onClick.AddListener(PlayButtonAudio);
-        _mainMenuAboutButton.onClick.AddListener(PlayButtonAudio);
-        _aboutButton.onClick.AddListener(PlayButtonAudio);
-        _mainMenuSettingsButton.onClick.AddListener(PlayButtonAudio);
-        _settingsToPauseButton.onClick.AddListener(PlayButtonAudio);
-        _pauseToSettingsButton.onClick.AddListener(PlayButtonAudio);
-        _startButton.onClick.AddListener(PlayButtonAudio);
-        _pauseToMainMenuButton.onClick.AddListener(PlayButtonAudio);
-        _pauseToContinueButton.onClick.AddListener(PlayButtonAudio);
     }
 
     private void LoadFirstScene()
     {
+        if (_bIsPaused == false)
+        {
+            _bIsPaused = true;
+        }
         TogglePause();
         _mainMenuCanvas.enabled = false;
+    }
+
+    private void RestartGame()
+    {
+        if (BonusService.Instance != null)
+        {
+            BonusService.Instance.ResetBonusState();
+        }
+        SceneManager.LoadScene(0);
+        
+        _gameOverCanvas.enabled = false;
+        
+        Time.timeScale = 1;
+        _backgroundMusic.enabled = true;
+        _uIMusic.enabled = false;
+        _bIsPaused = false;
     }
 
     private void ToggleAboutMenu()
@@ -153,7 +190,10 @@ public class SceneService : MonoBehaviour
     public void ShowGameOver()
     {
         _gameOverCanvas.enabled = true;
-        TogglePause(); // Паузим игру
+        Time.timeScale = 0;
+        _bIsPaused = true;
+        _backgroundMusic.enabled = false;
+        _uIMusic.Play();
     }
     
     private void ReturnToMainMenu()
@@ -186,17 +226,55 @@ public class SceneService : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
-            TogglePause();
+            TogglePauseUI();
         }
     }
 
     private void TogglePause()
     {
-        _uIMusic.enabled = !_uIMusic.enabled;
-        _backgroundMusic.enabled = !_backgroundMusic.enabled;
-        _pauseMenuCanvas.enabled = !_bIsPaused;
         _bIsPaused = !_bIsPaused;
+
+        if (_bIsPaused)
+        {
+            _uIMusic.Play();
+            _backgroundMusic.Stop();
+        }
+        else
+        {
+            _uIMusic.Stop();
+            _backgroundMusic.Play();
+        }
+        
         Time.timeScale = _bIsPaused ? 0 : 1;
+        //Cursor.lockState = _bIsPaused ? CursorLockMode.None : CursorLockMode.Locked;
+        //Cursor.visible = _bIsPaused;
+    }
+    
+    private void TogglePauseUI()
+    {
+        if (_settingsCanvas.enabled)
+        {
+            _settingsCanvas.enabled = false;
+        }
+        else
+        {
+            // Переключаем состояние паузы
+            _bIsPaused = !_bIsPaused;
+
+            if (_bIsPaused)
+            {
+                _uIMusic.Play();
+                _backgroundMusic.Stop();
+            }
+            else
+            {
+                _uIMusic.Stop();
+                _backgroundMusic.Play();
+            }
+
+            _pauseMenuCanvas.enabled = _bIsPaused;
+            Time.timeScale = _bIsPaused ? 0 : 1;
+        }
         //Cursor.lockState = _bIsPaused ? CursorLockMode.None : CursorLockMode.Locked;
         //Cursor.visible = _bIsPaused;
     }

@@ -1,7 +1,34 @@
+using System;
 using UnityEngine;
 
-[CreateAssetMenu(menuName = "Game/GameState")]
-public class GameState : ScriptableObject
+public class GameState : MonoBehaviour
 {
-    public bool IsFirstLaunch = true;
+    private static bool _isFirstLaunch = true;
+
+    public static bool IsFirstLaunch
+    {
+        get { return _isFirstLaunch; }
+        set { _isFirstLaunch = value; }
+    }
+    
+    public static GameState Instance;
+    
+    void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+
+    private void Start()
+    {
+        Debug.Log(IsFirstLaunch);
+    }
 }
+

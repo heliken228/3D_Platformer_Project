@@ -93,6 +93,8 @@ MonoBehaviour:
   _hitSound: {fileID: 5890882679703347032}
   _kickSound: {fileID: 2293507692326924040}
   _cameraTarget: {fileID: 265861132652001859}
+  _boostSpeed: 7
+  _animationSpeedMultiplier: 1.5
   groundCheck: {fileID: 2421919740839156486}
   groundDistance: 0.4
   groundMask:

@@ -5,4 +5,5 @@ public class UIGameOver : MonoBehaviour
 {
     public Canvas GameOverCanvas;
     public Button GameOverBackToMainMenu;
+    public Button GameOverRestartGame;
 }
