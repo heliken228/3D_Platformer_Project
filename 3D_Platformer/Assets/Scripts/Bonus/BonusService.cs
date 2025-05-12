@@ -15,7 +15,7 @@ public class BonusService : MonoBehaviour
     [SerializeField] private Sprite _halfHeart;
     [SerializeField] private Sprite _emptyHeart;
     [SerializeField] private Sprite _fullHeart;
-
+    
     private int _coinCount = 0;
     private int _gemCount = 0;
     private int _starCount = 0;
@@ -99,7 +99,9 @@ public class BonusService : MonoBehaviour
             Image heartImage = _hearts[_currentHeartIndex].GetComponent<Image>();
             if (heartImage != null)
             {
-                heartImage.transform.DOPunchScale(Vector3.one * 1.3f, 0.3f, vibrato: 1, elasticity: 0.5f).OnComplete(() => 
+                heartImage.transform.DOPunchScale(Vector3.one * 1.3f, 0.3f, vibrato: 1, elasticity: 0.5f)
+                    .SetUpdate(true)
+                    .OnComplete(() => 
                 {
                     heartImage.sprite = _emptyHeart;
                 });
@@ -113,7 +115,9 @@ public class BonusService : MonoBehaviour
             Image heartImage = _hearts[_currentHeartIndex].GetComponent<Image>();
             if (heartImage != null)
             {
-                heartImage.transform.DOPunchScale(Vector3.one * 1.3f, 0.3f, vibrato: 1, elasticity: 0.5f).OnComplete(() => 
+                heartImage.transform.DOPunchScale(Vector3.one * 1.3f, 0.3f, vibrato: 1, elasticity: 0.5f)
+                    .SetUpdate(true)
+                    .OnComplete(() => 
                 {
                     heartImage.sprite = _emptyHeart;
                 });
@@ -131,7 +135,9 @@ public class BonusService : MonoBehaviour
             Image heartImage = _hearts[_currentHeartIndex].GetComponent<Image>();
             if (heartImage != null)
             {
-                heartImage.transform.DOPunchScale(Vector3.one * 1.3f, 0.3f, vibrato: 1, elasticity: 0.5f).OnComplete(() =>
+                heartImage.transform.DOPunchScale(Vector3.one * 1.3f, 0.3f, vibrato: 1, elasticity: 0.5f)
+                    .SetUpdate(true)
+                    .OnComplete(() =>
                 {
                     heartImage.sprite = _emptyHeart;;
                 });
@@ -145,7 +151,9 @@ public class BonusService : MonoBehaviour
             Image heartImage = _hearts[_currentHeartIndex].GetComponent<Image>();
             if (heartImage != null)
             {
-                heartImage.transform.DOPunchScale(Vector3.one * 1.3f, 0.3f, vibrato: 1, elasticity: 0.5f).OnComplete(() =>
+                heartImage.transform.DOPunchScale(Vector3.one * 1.3f, 0.3f, vibrato: 1, elasticity: 0.5f)
+                    .SetUpdate(true)
+                    .OnComplete(() =>
                     {
                         heartImage.sprite = _halfHeart;
                     });

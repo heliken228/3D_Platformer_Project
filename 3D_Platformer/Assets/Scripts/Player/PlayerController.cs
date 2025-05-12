@@ -24,7 +24,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float _boostSpeed;
     [SerializeField] private float _animationSpeedMultiplier = 1.5f;
     
-    private SceneService _sceneService;
     private Vector3 _startPosition;
     private Rigidbody _rigidbody;
     private Vector3 _velocity;
@@ -41,10 +40,9 @@ public class PlayerController : MonoBehaviour
     private RagdollController _ragdollController;
     
     [Inject]
-    public void Construct(Camera camera, SceneService sceneService)
+    public void Construct(Camera camera)
     {
         _camera = camera;
-        _sceneService = sceneService;
     }
     
     private void Awake()
@@ -54,28 +52,25 @@ public class PlayerController : MonoBehaviour
         _inputSystem = new InputSystem_Actions();
         _ragdollController = GetComponentInChildren<RagdollController>();
         _startPosition = transform.position;
+        _movement = _inputSystem.Player.Move;
     }
 
     private void OnEnable()
     {
-        _inputSystem.Player.Enable();
-        _movement = _inputSystem.Player.Move;
-        _movement.Enable();
-        
-        _inputSystem.Player.Jump.performed += Jump;
-        _inputSystem.Player.Jump.Enable();
+        _inputSystem.Player.Enable(); // Включаем всю схему Player
+        _inputSystem.Player.Jump.performed += Jump; // Подписываемся на событие
     }
 
     private void OnDisable()
     {
-        _inputSystem.Player.Jump.performed -= Jump;
-        _movement.Disable();
-        _inputSystem.Player.Jump.Disable();
+        _inputSystem.Player.Jump.performed -= Jump; // Отписываемся от события
+        _inputSystem.Player.Disable(); // Отключаем всю схему Player (включая Move, Jump, Sprint)
     }
 
     private void OnDestroy()
     {
-        _inputSystem.Player.Disable();
+        _inputSystem.Disable();
+        _inputSystem.Dispose();
     }
 
     private void FixedUpdate()
@@ -219,7 +214,7 @@ public class PlayerController : MonoBehaviour
 
         if (isGameOver)
         {
-            _sceneService.ShowGameOver();
+            SceneService.Instance.ShowGameOver();
         }
     }
 
@@ -231,7 +226,7 @@ public class PlayerController : MonoBehaviour
 
         if (IsDie)
         {
-            _sceneService.ShowGameOver();
+            SceneService.Instance.ShowGameOver();
         }
     }
 
