@@ -84,6 +84,7 @@ public class SceneService : MonoBehaviour
     
     private void Start()
     {
+        Debug.Log("Starting SceneService");
         _currentSceneIndex = SceneManager.GetActiveScene().buildIndex;   // Определяем индекс текущей сцены
         
         _mainMenuStartButton.onClick.RemoveAllListeners();
@@ -129,7 +130,7 @@ public class SceneService : MonoBehaviour
         if (_isFirstLaunch)
         {
             TogglePause();
-            _uIMusic.enabled = true;
+            _uIMusic.Play();
             _aboutCanvas.enabled = false;
             _settingsCanvas.enabled = false;
             _gameOverCanvas.enabled = false;
@@ -162,8 +163,8 @@ public class SceneService : MonoBehaviour
         _gameOverCanvas.enabled = false;
         
         Time.timeScale = 1;
-        _backgroundMusic.enabled = true;
-        _uIMusic.enabled = false;
+        _backgroundMusic.Play();
+        _uIMusic.Stop();
         _bIsPaused = false;
     }
 
@@ -192,24 +193,25 @@ public class SceneService : MonoBehaviour
         _gameOverCanvas.enabled = true;
         Time.timeScale = 0;
         _bIsPaused = true;
-        _backgroundMusic.enabled = false;
+        _backgroundMusic.Stop();
         _uIMusic.Play();
     }
     
     private void ReturnToMainMenu()
     {
+        Debug.Log("Returning to main menu");
         if (BonusService.Instance != null)
         {
             BonusService.Instance.ResetBonusState();
         }
+        SceneManager.LoadScene(0, LoadSceneMode.Single);
         
-        SceneManager.LoadScene(0);
         _pauseMenuCanvas.enabled = false;
         _mainMenuCanvas.enabled = true;
         _bIsPaused = false;
-        Time.timeScale = 1;
-        _backgroundMusic.enabled = true;
-        _isFirstLaunch = true;
+        Time.timeScale = 0;
+        _backgroundMusic.Stop();
+        _uIMusic.Play();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -282,7 +284,6 @@ public class SceneService : MonoBehaviour
     public void LoadNextScene()
     {
         int nextSceneIndex = SceneManager.GetActiveScene().buildIndex + 1;
-        
         _loadingCanvas.gameObject.SetActive(true); // Активируем Canvas с надписью "Loading"
         StartCoroutine(SceneLoad(nextSceneIndex));
     }
@@ -310,23 +311,22 @@ public class SceneService : MonoBehaviour
 
     public void OnStartButtonClicked()
     {
-        int currentSceneIndex = SceneManager.GetActiveScene().buildIndex;
-        
-        if (currentSceneIndex > 0)
-        {
-            int previousSceneIndex = currentSceneIndex - 1;
-            if (SceneManager.GetSceneByBuildIndex(previousSceneIndex).isLoaded)
-            {
-                SceneManager.UnloadSceneAsync(previousSceneIndex);
-            }
-        }
-        
-        // Активируем сцену, когда игрок нажимает кнопку "Начать"
+        // Активируем загруженную сцену
+    if (_asyncLoad != null)
+    {
         _asyncLoad.allowSceneActivation = true;
-        _startButton.gameObject.SetActive(false); // Скрываем кнопку после нажатия
-        Time.timeScale = 1;
-        _bIsPaused = false;
-        _backgroundMusic.enabled = true;
-        _uIMusic.enabled = false;
+    }
+
+    // Скрываем кнопку и UI загрузки
+    _startButton.gameObject.SetActive(false);
+    _loadingCanvas.enabled = false;
+
+    // Восстанавливаем игровое время
+    Time.timeScale = 1;
+    _bIsPaused = false;
+
+    // Переключаем музыку
+    _backgroundMusic.Play();
+    _uIMusic.Stop();
     }
 }
