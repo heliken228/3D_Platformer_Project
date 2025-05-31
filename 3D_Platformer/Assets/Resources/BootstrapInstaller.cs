@@ -14,6 +14,8 @@ public class BootstrapInstaller : MonoInstaller
     public GameObject UI_GameOver;
     public GameObject UI_About;
     public GameObject UI_Settings;
+    public GameObject UI_Timer;
+    public GameObject UI_GameEnd;
     public override void InstallBindings()
     {
         Container.Bind<BonusService>().AsSingle();
@@ -67,6 +69,16 @@ public class BootstrapInstaller : MonoInstaller
         
         Container.Bind<BonusEffectProjectContext>()
             .FromComponentInNewPrefab(BonusCollectEffect)
+            .AsSingle()
+            .Lazy();
+        
+        Container.Bind<UITimer>()
+            .FromComponentInNewPrefab(UI_Timer)
+            .AsSingle()
+            .Lazy();
+        
+        Container.Bind<UIGameEnd>()
+            .FromComponentInNewPrefab(UI_GameEnd)
             .AsSingle()
             .Lazy();
     }

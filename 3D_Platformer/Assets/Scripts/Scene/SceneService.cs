@@ -39,9 +39,27 @@ public class SceneService : MonoBehaviour
     private Button _gameOverMainMenuButton;
     private Button _gameOverRestartButton;
     
+    private Canvas _gameEndCanvas;
+    private TMP_Text _gameEndText1;
+    private TMP_Text _gameEndText2;
+    private TMP_Text _gameEndText3;
+    private Button _gameEndRestartButton;
+    private Button _gameEndMainMenuButton;
+    
     private AudioSource _backgroundMusic;
     private AudioSource _uIMusic;
     private AudioSource _buttonAudio;
+    
+    private Canvas _timerCanvas;
+    private TMP_Text _timerText;
+    private TMP_Text _timeTextLevel1;
+    private TMP_Text _timeTextLevel2;
+    private TMP_Text _timeTextLevel3;
+    private float _timeLevel1;
+    private float _timeLevel2;
+    private float _timeLevel3;
+    private float _timer = 0f;
+    private bool _isRunning = false;
     
     private AsyncOperation _asyncLoad;
     private int _currentSceneIndex = 0;
@@ -50,7 +68,8 @@ public class SceneService : MonoBehaviour
     [Inject] 
     public void Construction(UILoadingPanel loadingPanel, UIMainMenu mainMenu, 
         UIPause pauseMenu, BackgroundMusic backgroundMusic, UIMusic uiMusic,
-        ButtonClickAudio buttonClickAudio, UIAbout about, UISettings settings, UIGameOver gameOver)
+        ButtonClickAudio buttonClickAudio, UIAbout about, UISettings settings,
+        UIGameOver gameOver, UITimer timer, UIGameEnd gameEnd)
     {
         if (Instance != null && Instance != this)
         {
@@ -87,6 +106,19 @@ public class SceneService : MonoBehaviour
         _gameOverMainMenuButton = gameOver.GameOverBackToMainMenu;
         _gameOverRestartButton = gameOver.GameOverRestartGame;
         
+        _timerCanvas = timer.TimerCanvas;
+        _timerText = timer.TimerText;
+        _timeTextLevel1 = timer.TextLevel1;
+        _timeTextLevel2 = timer.TextLevel2;
+        _timeTextLevel3 = timer.TextLevel3;
+
+        _gameEndCanvas = gameEnd.UIGameEndCanvas;
+        _gameEndText1 = gameEnd.UIGameEndTextResult1;
+        _gameEndText2 = gameEnd.UIGameEndTextResult2;
+        _gameEndText3 = gameEnd.UIGameEndTextResult3;
+        _gameEndRestartButton = gameEnd.UIGameEndRestart;
+        _gameEndMainMenuButton = gameEnd.UIGameEndMainMenu;
+        
         _backgroundMusic = backgroundMusic.BackgroundAudio.GetComponent<AudioSource>();
         _uIMusic = uiMusic.UIMusicObject.GetComponent<AudioSource>();
         _buttonAudio = buttonClickAudio.ButtonClickAudioObject.GetComponent<AudioSource>();
@@ -110,6 +142,8 @@ public class SceneService : MonoBehaviour
         _pauseToContinueButton.onClick.RemoveAllListeners();
         _gameOverMainMenuButton.onClick.RemoveAllListeners();
         _gameOverRestartButton.onClick.RemoveAllListeners();
+        _gameEndRestartButton.onClick.RemoveAllListeners();
+        _gameEndMainMenuButton.onClick.RemoveAllListeners();
             
 
         // Добавляем обработчики событий
@@ -125,6 +159,8 @@ public class SceneService : MonoBehaviour
         _pauseToContinueButton.onClick.AddListener(TogglePauseUI);
         _gameOverMainMenuButton.onClick.AddListener(ReturnToMainMenu);
         _gameOverRestartButton.onClick.AddListener(RestartGame);
+        _gameEndRestartButton.onClick.AddListener(RestartGame);
+        _gameEndMainMenuButton.onClick.AddListener(ReturnToMainMenu);
 
         // Добавляем обработчики для воспроизведения звука кнопки
         _mainMenuStartButton.onClick.AddListener(PlayButtonAudio);
@@ -139,6 +175,8 @@ public class SceneService : MonoBehaviour
         _pauseToContinueButton.onClick.AddListener(PlayButtonAudio);
         _gameOverMainMenuButton.onClick.AddListener(PlayButtonAudio);
         _gameOverRestartButton.onClick.AddListener(PlayButtonAudio);
+        _gameEndRestartButton.onClick.AddListener(PlayButtonAudio);
+        _gameEndMainMenuButton.onClick.AddListener(PlayButtonAudio);
         
         // Активируем главное меню только при первом запуске
         if (_isFirstLaunch)
@@ -148,12 +186,16 @@ public class SceneService : MonoBehaviour
             _aboutCanvas.enabled = false;
             _settingsCanvas.enabled = false;
             _gameOverCanvas.enabled = false;
+            _gameEndCanvas.enabled = false;
             _mainMenuCanvas.enabled = true;
         }
         
         _isFirstLaunch = false;
         _loadingCanvas.enabled = false;
         _pauseMenuCanvas.enabled = false;
+        
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
     }
 
     private void LoadFirstScene()
@@ -162,7 +204,9 @@ public class SceneService : MonoBehaviour
         {
             _bIsPaused = true;
         }
+        
         TogglePause();
+        _isRunning = true;
         _mainMenuCanvas.enabled = false;
     }
 
@@ -175,11 +219,21 @@ public class SceneService : MonoBehaviour
         SceneManager.LoadScene(0, LoadSceneMode.Single);
         
         _gameOverCanvas.enabled = false;
+        _gameEndCanvas.enabled = false;
         
         Time.timeScale = 1;
         _backgroundMusic.Play();
         _uIMusic.Stop();
         _bIsPaused = false;
+    }
+
+    private void StartTimer()
+    {
+        int minutes = Mathf.FloorToInt(_timer / 60f);
+        int seconds = Mathf.FloorToInt(_timer % 60f);
+        int milliseconds = Mathf.FloorToInt((_timer * 1000f) % 1000);
+
+        _timerText.text = $"{minutes:00}:{seconds:00}.{milliseconds:000}";
     }
 
     private void ToggleAboutMenu()
@@ -204,12 +258,23 @@ public class SceneService : MonoBehaviour
     
     public void ShowGameOver()
     {
-        _gameOverCanvas.enabled = true;
+        _gameEndCanvas.enabled = true;
         Time.timeScale = 0;
         _bIsPaused = true;
         _backgroundMusic.Stop();
         _uIMusic.Play();
         
+        Cursor.lockState = CursorLockMode.None;
+        Cursor.visible = true;
+        
+        if (_gameEndText1 != null)
+            _gameEndText1.text = "1 lvl: " + FormatTime(_timeLevel1);
+
+        if (_gameEndText2 != null)
+            _gameEndText2.text = "2 lvl: " + FormatTime(_timeLevel2);
+
+        if (_gameEndText3 != null)
+            _gameEndText3.text = "3 lvl: " + FormatTime(_timeLevel3);
     }
 
     public void ExitGame()
@@ -236,6 +301,21 @@ public class SceneService : MonoBehaviour
 
     public void OnTriggerFinish()
     {
+        int currentScene = SceneManager.GetActiveScene().buildIndex;
+
+        if (currentScene == 0)
+        {
+            _timeLevel1 = _timer;
+        }
+        else if (currentScene == 1)
+        {
+            _timeLevel2 = _timer;
+        }
+        else if (currentScene == 2)
+        {
+            _timeLevel3 = _timer;
+        }
+        
         if (IsLastScene())
         {
             ShowGameOver();
@@ -247,12 +327,26 @@ public class SceneService : MonoBehaviour
             _loadingCanvas.enabled = true;
         }
     }
+    
+    private string FormatTime(float time)
+    {
+        int minutes = Mathf.FloorToInt(time / 60f);
+        int seconds = Mathf.FloorToInt(time % 60f);
+        int milliseconds = Mathf.FloorToInt((time * 1000f) % 1000);
+        return $"{minutes:00}:{seconds:00}.{milliseconds:000}";
+    }
 
     private void Update()
     {
         if (Input.GetKeyDown(KeyCode.Escape))
         {
             TogglePauseUI();
+        }
+
+        if (_isRunning)
+        {
+            _timer += Time.deltaTime;
+            StartTimer();
         }
     }
 
@@ -269,16 +363,18 @@ public class SceneService : MonoBehaviour
         {
             _uIMusic.Play();
             _backgroundMusic.Stop();
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
         }
         else
         {
             _uIMusic.Stop();
             _backgroundMusic.Play();
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
         }
         
         Time.timeScale = _bIsPaused ? 0 : 1;
-        //Cursor.lockState = _bIsPaused ? CursorLockMode.None : CursorLockMode.Locked;
-        //Cursor.visible = _bIsPaused;
     }
     
     private void TogglePauseUI()
@@ -296,11 +392,15 @@ public class SceneService : MonoBehaviour
             {
                 _uIMusic.Play();
                 _backgroundMusic.Stop();
+                Cursor.lockState = CursorLockMode.None;
+                Cursor.visible = true;
             }
             else
             {
                 _uIMusic.Stop();
                 _backgroundMusic.Play();
+                Cursor.lockState = CursorLockMode.Locked;
+                Cursor.visible = false;
             }
 
             _pauseMenuCanvas.enabled = _bIsPaused;
@@ -337,17 +437,40 @@ public class SceneService : MonoBehaviour
             yield return null;
         }
     }
+
     private void OnStartButtonClicked()
     {
-    if (_asyncLoad != null)
-    {
-        _asyncLoad.allowSceneActivation = true;
-    }
-    _startButton.gameObject.SetActive(false);
-    _loadingCanvas.enabled = false;
-    Time.timeScale = 1;
-    _bIsPaused = false;
-    _backgroundMusic.Play();
-    _uIMusic.Stop();
+        if (_asyncLoad != null)
+        {
+            _asyncLoad.allowSceneActivation = true;
+        }
+
+        _startButton.gameObject.SetActive(false);
+        _loadingCanvas.enabled = false;
+        Time.timeScale = 1;
+        _bIsPaused = false;
+        _backgroundMusic.Play();
+        _uIMusic.Stop();
+        
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+
+        _timer = 0f;
+        _isRunning = true;
+
+        int currentScene = SceneManager.GetActiveScene().buildIndex;
+
+        if (currentScene == 0)
+        {
+            if (_timeTextLevel1 != null)
+                _timeTextLevel1.text = "1 lvl: " + FormatTime(_timeLevel1);
+        }
+        else if (currentScene == 1)
+        {
+            if (_timeTextLevel1 != null)
+                _timeTextLevel1.text = "1 lvl: " + FormatTime(_timeLevel1);
+            if (_timeTextLevel2 != null)
+                _timeTextLevel2.text = "2 lvl: " + FormatTime(_timeLevel2);
+        }
     }
 }

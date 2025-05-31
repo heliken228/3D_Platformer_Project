@@ -84,4 +84,5 @@ MonoBehaviour:
   UI_GameOver: {fileID: 5478337915922533420, guid: 77e8d6b1f3ca9344ea7dd085d7e4fc83, type: 3}
   UI_About: {fileID: 1204869566132623400, guid: 725193c004a8a724782bd9898c9d2596, type: 3}
   UI_Settings: {fileID: 8175950554034055702, guid: 251e115230e8d6d458c8b61d0715b66e, type: 3}
-  SceneService: {fileID: 1008879924012732335, guid: 8a1881db5f0054d42b657595323dffc4, type: 3}
+  UI_Timer: {fileID: 6526643542926437838, guid: d1dc3f32c0153b3469552b2ecd702fa4, type: 3}
+  UI_GameEnd: {fileID: 3853776925059171269, guid: 06f95b5eb8a91d7469294324ea1d8dfe, type: 3}
